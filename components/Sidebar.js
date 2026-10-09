@@ -25,7 +25,7 @@ export default function Sidebar({ open, onClose }) {
             onChange={(e) => setQuery(e.target.value)} aria-label="Search" />
         </label>
 
-        <nav className="nav">
+        <nav className="nav primary">
           {NAV.map((item) => (
             <Link key={item.href} href={item.href} onClick={onClose}
               className={`nav-item ${isActive(item.href) ? "active" : ""}`}

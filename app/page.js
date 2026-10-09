@@ -15,7 +15,8 @@ export default function Dashboard() {
 
       <section className="stats" aria-label="Summary">
         {STATS.map((s) => (
-          <article key={s.id} className={`panel stat stat-${s.id}`}>
+          <Link key={s.id} href={s.id === "total" ? "/leads" : s.id === "new" ? "/leads?filter=new" : "/calendar?view=follow-ups"}
+            className={`panel stat stat-${s.id}`} aria-label={`${s.label}: ${s.value}. Open ${s.id === "total" || s.id === "new" ? "leads" : "follow-ups"}`}>
             {s.id === "total" || s.id === "new" ? (
               <>
                 <h2 className="stat-label">{s.label}</h2>
@@ -35,7 +36,7 @@ export default function Dashboard() {
                 </div>
               </>
             )}
-          </article>
+          </Link>
         ))}
       </section>
 
@@ -101,9 +102,12 @@ export default function Dashboard() {
         <ul className="activity-list">
           {ACTIVITY.map((a, i) => (
             <li key={i}>
-              <span className={`act-icon ${a.tone}`}><Icon name={a.icon} size={14} strokeWidth={2} /></span>
-              <div className="act-text"><b>{a.title}</b><small>{a.sub}</small></div>
-              <time>{a.time}</time>
+              <Link href={i === 0 ? "/leads?filter=new" : i === 1 ? "/leads?status=qualified" : i === 2 ? "/leads?search=Glitz%20N%20Glam" : "/leads?search=Shopkyluxury"}
+                className="activity-row" aria-label={`${a.title}: ${a.sub}`}>
+                <span className={`act-icon ${a.tone}`}><Icon name={a.icon} size={14} strokeWidth={2} /></span>
+                <div className="act-text"><b>{a.title}</b><small>{a.sub}</small></div>
+                <time>{a.time}</time>
+                </Link>
             </li>
           ))}
         </ul>
