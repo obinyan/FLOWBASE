@@ -50,7 +50,7 @@ small { display: block; }
 .nav-item.active { background: var(--active); }
 .nav-item svg { flex: none; }
 .nav-item.small { font-size: 17px; height: 36px; }
-.nav.secondary { margin: 14px 0 0 0; gap: 2px; }
+.nav.secondary { margin: 14px 0 20px 0; gap: 2px; }
 
 .divider { border: 2; height: 2px; background: rgba(255, 255, 255, 0.28); margin: 18px 0 14px; width: 100%; }
 
@@ -66,7 +66,7 @@ small { display: block; }
 .quick-item:hover { background: rgba(255, 255, 255, 0.07); color: #fff; }
 
 /* Hub card: gently glowing, entrance once */
-.hub-card { margin-top: auto; width: 240px; padding: 18px 16px 16px; border-radius: 12px; background: #0d0641;
+.hub-card { margin: auto; width: 240px; padding: 18px 16px 16px; border-radius: 12px; background: #0d0641;
   animation: hubIn 0.5s cubic-bezier(.2,.8,.2,1) 0.4s both, hubGlow 4.5s ease-in-out 1s infinite; }
 .hub-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
 .hub-card p { font-size: 14px; line-height: 1.35; margin-bottom: 14px; max-width: 160px; }
