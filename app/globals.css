@@ -50,7 +50,7 @@ small { display: block; }
 .nav-item.active { background: var(--active); }
 .nav-item svg { flex: none; }
 .nav-item.small { font-size: 17px; height: 36px; }
-.nav.secondary { margin: 14px 0 100px 0; gap: 2px; }
+.nav.secondary { margin: 14px 0 0 0; gap: 2px; }
 
 .divider { border: 2; height: 2px; background: rgba(255, 255, 255, 0.28); margin: 18px 0 14px; width: 100%; }
 
