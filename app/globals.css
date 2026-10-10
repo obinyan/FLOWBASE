@@ -66,12 +66,12 @@ small { display: block; }
 .quick-item:hover { background: rgba(255, 255, 255, 0.07); color: #fff; }
 
 /* Hub card: gently glowing, entrance once */
-.hub-card { margin: auto; width: 240px; padding: 18px 16px 16px; border-radius: 12px; background: #0d0641;
+.hub-card { margin: auto; padding: 18px 16px 16px; border-radius: 12px; background: #0d0641;
   animation: hubIn 0.5s cubic-bezier(.2,.8,.2,1) 0.4s both, hubGlow 4.5s ease-in-out 1s infinite; }
 .hub-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
 .hub-card p { font-size: 14px; line-height: 1.35; margin-bottom: 14px; max-width: 160px; }
 .hub-actions { display: flex; gap: 10px; }
-.btn-upgrade, .btn-learn { display: inline-flex; align-items: center; justify-content: center; gap: 4px; height: 34px; padding: 0 12px; border-radius: 20px; font-size: 13px; font-weight: 500; transition: filter 0.15s, transform 0.15s; }
+.btn-upgrade, .btn-learn { display: inline-flex; align-items: center; justify-content: center; gap: 4px; height: 34px; padding: 0 12px; border-radius: 20px; font-size: 9px; font-weight: 600; transition: filter 0.15s, transform 0.15s; }
 .btn-upgrade { background: #7b86c9; color: #0d0641; }
 .btn-learn { background: #2d2186; color: #fff; }
 .btn-upgrade:hover, .btn-learn:hover { filter: brightness(1.12); }
