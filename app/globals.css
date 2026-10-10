@@ -24,7 +24,7 @@ small { display: block; }
 
 /* ───────── Shell ───────── */
 .shell { display: grid; grid-template-columns: 272px minmax(0, 1fr); min-height: 100vh; }
-.main { display: flex; flex-direction: column; gap: 14px; padding: 12px 20px 12px 0; min-width: 0; }
+.main { display: flex; flex-direction: column; gap: 14px; padding: 12px 20px 12px 20px; min-width: 0; }
 .panel { background: var(--panel); border-radius: var(--radius); }
 .mobilebar { display: none; }
 
@@ -50,9 +50,9 @@ small { display: block; }
 .nav-item.active { background: var(--active); }
 .nav-item svg { flex: none; }
 .nav-item.small { font-size: 17px; height: 36px; }
-.nav.secondary { margin-top: 14px; gap: 2px; }
+.nav.secondary { margin: 14px 0 100px 0; gap: 2px; }
 
-.divider { border: 0; height: 1px; background: rgba(255, 255, 255, 0.28); margin: 18px 0 14px; width: 100%; }
+.divider { border: 2; height: 2px; background: rgba(255, 255, 255, 0.28); margin: 18px 0 14px; width: 100%; }
 
 .quick-toggle { display: flex; align-items: center; gap: 8px; padding: 6px 10px; font-size: 17px; border-radius: 10px; width: 100%; text-align: left; }
 .quick-toggle:hover { background: rgba(255, 255, 255, 0.07); }
@@ -66,11 +66,11 @@ small { display: block; }
 .quick-item:hover { background: rgba(255, 255, 255, 0.07); color: #fff; }
 
 /* Hub card: gently glowing, entrance once */
-.hub-card { margin-top: auto; padding: 18px 16px 16px; border-radius: 12px; background: #0d0641; border: 1px solid rgba(143, 153, 224, 0.28);
+.hub-card { margin-top: auto; width: 20px; padding: 18px 16px 16px; border-radius: 12px; background: #0d0641;
   animation: hubIn 0.5s cubic-bezier(.2,.8,.2,1) 0.4s both, hubGlow 4.5s ease-in-out 1s infinite; }
 .hub-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
 .hub-card p { font-size: 14px; line-height: 1.35; margin-bottom: 14px; max-width: 160px; }
-.hub-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.hub-actions { display: flex; gap: 10px; border-radius: 20px; }
 .btn-upgrade, .btn-learn { display: inline-flex; align-items: center; justify-content: center; gap: 4px; height: 34px; padding: 0 12px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: filter 0.15s, transform 0.15s; }
 .btn-upgrade { background: #7b86c9; color: #0d0641; }
 .btn-learn { background: #2d2186; color: #fff; }
