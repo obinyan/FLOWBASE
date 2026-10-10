@@ -399,3 +399,24 @@ small { display: block; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+@media (min-width: 961px) {
+  .sidebar {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .sidebar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    -webkit-backdrop-filter: var(--blur);
+    backdrop-filter: var(--blur);
+  }
+
+  .sidebar .wordmark {
+    position: fixed;
+    top: 32px;
+    left: 64px;
+  }
+}
