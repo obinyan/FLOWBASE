@@ -487,7 +487,7 @@ small { display: block; }
 .signup-field > input, .signup-field .password-input { display: block; width: 100%; margin-top: 3px; padding: 6px 23px; border: 0; border-bottom: 1px solid rgba(255,255,255,.48); border-radius: 0; background: transparent; outline: 0; font-size: 10px; color: #fff; }
 .signup-field > input:focus, .signup-field .password-input:focus-within { border-color: #fff; }
 .signup-field > input::placeholder, .signup-field .password-input input::placeholder { color: #c2beda; opacity: 1; }
-.signup-field .password-input { display: flex; padding-right: 0; }
+.signup-field .password-input { display: flex; gap: 50px; padding-right: 0; }
 .signup-field .password-input input { padding-left: 0; font-size: 10px; }
 .password-hint { display: block; margin: -9px 12px 37px; color: #e2dff4; font-size: 11px; }
 .signup-submit { width: 100%; height: 42px; border-radius: 12px; background: #8999df !important; color: #11103b !important; font-size: 13px !important; font-weight: 600 !important; transition: filter .18s; }
