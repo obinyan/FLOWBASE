@@ -417,7 +417,7 @@ small { display: block; }
 .auth-brand { display: inline-flex; align-items: center; z-index: 2; }
 .auth-brand span { font-family: var(--font-logo); font-size: 25px; font-weight: 600; letter-spacing: .12em; line-height: 1; }
 .signin-brand { position: absolute; top: 0; left: 0; }
-.orbit-art { position: absolute; left: 30px; top: 48.2%; width: min(100%, 470px); height: 70%; transform: translateY(-45%); }
+.orbit-art { position: absolute; left: 60px; top: 46.9%; width: min(100%, 470px); height: 70%; transform: translateY(-45%); }
 .orbit-line { position: absolute; left: 50%; top: 50%; height: 1px; background: rgba(195, 195, 227, .45); transform-origin: left center; }
 .orbit-line.vertical { width: 70%; transform: rotate(90deg); }
 .orbit-line.horizontal-left { width: 57%; transform: rotate(180deg); }
@@ -425,8 +425,8 @@ small { display: block; }
 .orbit-line.diagonal-one { width: 76%; transform: rotate(225deg); }
 .orbit-line.diagonal-two { width: 76%; transform: rotate(135deg); }
 .orbit-line.diagonal-three { width: 70%; transform: rotate(270deg); }
-.orbit-line.diagonal-four { width: 50%; transform: rotate(0deg); }
-.orbit-center { position: absolute; left: calc(50% - 19px); top: calc(48.2% - 15px); width: 38px; height: 32px; padding: 10px; border-radius: 12px; background: #362b83; box-shadow: 0 0 20px rgba(95, 82, 192, .2); }
+.orbit-line.diagonal-four { width: 70%; transform: rotate(0deg); }
+.orbit-center { position: absolute; left: calc(50% - 19px); top: calc(49.2% - 15px); width: 38px; height: 32px; padding: 10px; border-radius: 12px; background: #362b83; box-shadow: 0 0 20px rgba(95, 82, 192, .2); }
 .signin-card { min-height: min(84vh, 650px); position: relative; display: flex; flex-direction: column; padding: 22px 30px 24px; border-radius: 22px; background: var(--auth-panel); }
 .signin-topline { display: flex; justify-content: space-between; align-items: center; gap: 18px; font-size: 11px; color: #e1def7; }
 .signin-topline a { color: #fff; font-weight: 600; white-space: nowrap; }
