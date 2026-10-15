@@ -446,11 +446,11 @@ small { display: block; }
 .signin-options input { accent-color: var(--auth-lilac); }
 .signin-options button { color: #e5e2f5; }
 .auth-or { display: flex; align-items: center; gap: 16px; justify-content: center; margin: 32px 0 16px; font-size: 13px; font-weight: 600; }
-.auth-or span { height: 1px; flex: 1; background: rgba(255,255,255,.45); }
+.auth-or span { height: 0px; flex: 1; background: rgba(255,255,255,.45); }
 .google-button { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: 40px; border: 1px solid rgba(255,255,255,.85) !important; border-radius: 11px; font-size: 12px; font-weight: 500; color: #fff; transition: background .18s; }
 .google-button:hover { background: rgba(255,255,255,.1); }
 .google-mark { position: absolute; left: 17px; font-size: 21px; line-height: 1; font-family: Arial, sans-serif; font-weight: 700; color: #4285f4; text-shadow: 1px 1px #34a853, -1px -1px #ea4335; }
-.signin-submit { position: absolute; right: -7px; bottom: -208px; width: 76px; height: 76px; border-radius: 50%; color: #10103d !important; background: #8999df !important; font-size: 12px !important; font-weight: 600 !important; transition: transform .18s, filter .18s; }
+.signin-submit { position: absolute; right: -7px; bottom: -150px; width: 76px; height: 76px; border-radius: 50%; color: #10103d !important; background: #8999df !important; font-size: 12px !important; font-weight: 600 !important; transition: transform .18s, filter .18s; }
 .signin-submit:hover { transform: translateY(-2px); filter: brightness(1.08); }
 
 .auth-signup { min-height: 100vh; display: grid; grid-template-columns: minmax(420px, 1.2fr) minmax(340px, .8fr); align-items: center; gap: clamp(28px, 3vw, 48px); padding: 32px 3vw; }
