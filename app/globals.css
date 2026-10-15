@@ -416,7 +416,7 @@ small { display: block; }
 .signin-left { height: min(84vh, 650px); position: relative; display: flex; align-items: flex-start; }
 .auth-brand { display: inline-flex; align-items: center; z-index: 2; }
 .auth-brand span { font-family: var(--font-logo); font-size: 25px; font-weight: 600; letter-spacing: .12em; line-height: 1; }
-.signin-brand { position: absolute; top: 0; left: 0; }
+.signin-brand { position: absolute; top: -25px; left: 0; }
 .orbit-art { position: absolute; left: 60px; top: 46.9%; width: min(100%, 470px); height: 70%; transform: translateY(-45%); }
 .orbit-line { position: absolute; left: 50%; top: 50%; height: 1px; background: rgba(195, 195, 227, .45); transform-origin: left center; }
 .orbit-line.vertical { width: 70%; transform: rotate(90deg); }
