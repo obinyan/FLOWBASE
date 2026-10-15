@@ -400,3 +400,107 @@ small { display: block; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
+/* ───────── Demo authentication ───────── */
+.auth-page {
+  --auth-ink: #08053f;
+  --auth-panel: #362b83;
+  --auth-lilac: #8696db;
+  min-height: 100vh;
+  color: #fff;
+  background: var(--auth-ink);
+  font-family: var(--font);
+}
+.auth-page * { box-sizing: border-box; }
+.auth-page button, .auth-page input { font: inherit; }
+.auth-signin { min-height: 100vh; display: grid; grid-template-columns: minmax(310px, 1fr) minmax(490px, 1.16fr); align-items: center; gap: clamp(34px, 6vw, 92px); padding: 32px 4vw 32px 3.2vw; }
+.signin-left { height: min(84vh, 650px); position: relative; display: flex; align-items: flex-start; }
+.auth-brand { display: inline-flex; align-items: center; z-index: 2; }
+.auth-brand span { font-family: var(--font-logo); font-size: 25px; font-weight: 600; letter-spacing: .12em; line-height: 1; }
+.signin-brand { position: absolute; top: 0; left: 0; }
+.orbit-art { position: absolute; left: 0; top: 50%; width: min(100%, 470px); height: 70%; transform: translateY(-45%); }
+.orbit-line { position: absolute; left: 50%; top: 50%; height: 1px; background: rgba(195, 195, 227, .45); transform-origin: left center; }
+.orbit-line.vertical { width: 48%; transform: rotate(90deg); }
+.orbit-line.horizontal-left { width: 47%; transform: rotate(180deg); }
+.orbit-line.horizontal-right { width: 50%; }
+.orbit-line.diagonal-one { width: 51%; transform: rotate(225deg); }
+.orbit-line.diagonal-two { width: 51%; transform: rotate(135deg); }
+.orbit-line.diagonal-three { width: 50%; transform: rotate(315deg); }
+.orbit-line.diagonal-four { width: 50%; transform: rotate(45deg); }
+.orbit-center { position: absolute; left: calc(50% - 19px); top: calc(50% - 15px); width: 38px; height: 32px; border-radius: 12px; background: #362b83; box-shadow: 0 0 20px rgba(95, 82, 192, .2); }
+.signin-card { min-height: min(84vh, 650px); position: relative; display: flex; flex-direction: column; padding: 22px 30px 24px; border-radius: 22px; background: var(--auth-panel); }
+.signin-topline { display: flex; justify-content: space-between; align-items: center; gap: 18px; font-size: 11px; color: #e1def7; }
+.signin-topline a { color: #fff; font-weight: 600; white-space: nowrap; }
+.signin-topline a:hover, .auth-switch a:hover { text-decoration: underline; }
+.signin-form { width: 100%; margin: auto 0; position: relative; }
+.signin-form h1 { font-size: clamp(38px, 4vw, 48px); line-height: 1; font-weight: 400; margin: 0 0 36px; }
+.signin-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.signin-fields > label { display: flex; flex-direction: column; gap: 10px; font-size: 13px; font-weight: 600; }
+.signin-fields input { width: 100%; border: 0; border-bottom: 1px solid rgba(255,255,255,.45); background: transparent; height: 24px; outline: 0; color: #fff; font-size: 14px; }
+.signin-fields input:focus { border-color: #fff; }
+.password-input { display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,.45); }
+.password-input input { border-bottom: 0; }
+.password-input button { display: grid; place-items: center; width: 24px; height: 24px; flex: none; color: #fff; }
+.password-input svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.signin-options { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 11px; color: #eeeafb; }
+.signin-options label { display: flex; align-items: center; gap: 5px; }
+.signin-options input { accent-color: var(--auth-lilac); }
+.signin-options button { color: #e5e2f5; }
+.auth-or { display: flex; align-items: center; gap: 16px; justify-content: center; margin: 32px 0 16px; font-size: 13px; font-weight: 600; }
+.auth-or span { height: 1px; flex: 1; background: rgba(255,255,255,.45); }
+.google-button { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: 40px; border: 1px solid rgba(255,255,255,.85) !important; border-radius: 11px; font-size: 12px; font-weight: 500; color: #fff; transition: background .18s; }
+.google-button:hover { background: rgba(255,255,255,.1); }
+.google-mark { position: absolute; left: 17px; font-size: 21px; line-height: 1; font-family: Arial, sans-serif; font-weight: 700; color: #4285f4; text-shadow: 1px 1px #34a853, -1px -1px #ea4335; }
+.signin-submit { position: absolute; right: -7px; bottom: -208px; width: 76px; height: 76px; border-radius: 50%; color: #10103d !important; background: #8999df !important; font-size: 12px !important; font-weight: 600 !important; transition: transform .18s, filter .18s; }
+.signin-submit:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
+.auth-signup { min-height: 100vh; display: grid; grid-template-columns: minmax(420px, 1.2fr) minmax(340px, .8fr); align-items: center; gap: clamp(28px, 3vw, 48px); padding: 32px 3vw; }
+.signup-story { height: min(92vh, 740px); display: flex; flex-direction: column; justify-content: space-between; padding: 30px 27px 30px; border-radius: 13px; background: var(--auth-panel); }
+.story-brand { align-self: flex-end; }
+.story-bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 48px; }
+.story-bottom h1 { font-size: clamp(30px, 3.4vw, 38px); font-weight: 400; line-height: 1.23; }
+.story-bottom p { font-size: 14px; line-height: 1.25; margin-bottom: 5px; color: #e6e3f5; }
+.signup-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.signup-steps li { min-height: 148px; padding: 12px 14px; border-radius: 14px; background: rgba(255,255,255,.11); display: flex; flex-direction: column; justify-content: space-between; }
+.signup-steps li.current { background: #fff; color: #080808; }
+.signup-steps li span { display: grid; place-items: center; width: 23px; height: 23px; border-radius: 50%; background: rgba(255,255,255,.18); font-size: 12px; }
+.signup-steps li.current span { background: #080808; color: #fff; }
+.signup-steps li b { font-size: 16px; line-height: 1.2; font-weight: 400; }
+.signup-form-wrap { width: min(100%, 420px); justify-self: center; padding: 18px 0; }
+.signup-heading { text-align: center; margin-bottom: 36px; }
+.signup-heading h2 { font-size: 30px; font-weight: 400; margin-bottom: 4px; }
+.signup-heading p { font-size: 12px; }
+.signup-form .google-button { margin-bottom: 0; }
+.signup-form .google-mark { left: 14px; }
+.signup-form .auth-or { margin: 19px 12px 23px; }
+.signup-field { display: block; margin: 0 12px 23px; font-size: 13px; font-weight: 600; }
+.signup-field > input, .signup-field .password-input { display: block; width: 100%; margin-top: 3px; padding: 6px 23px; border: 0; border-bottom: 1px solid rgba(255,255,255,.48); border-radius: 0; background: transparent; outline: 0; font-size: 10px; color: #fff; }
+.signup-field > input:focus, .signup-field .password-input:focus-within { border-color: #fff; }
+.signup-field > input::placeholder, .signup-field .password-input input::placeholder { color: #c2beda; opacity: 1; }
+.signup-field .password-input { display: flex; padding-right: 0; }
+.signup-field .password-input input { padding-left: 0; font-size: 10px; }
+.password-hint { display: block; margin: -9px 12px 37px; color: #e2dff4; font-size: 11px; }
+.signup-submit { width: 100%; height: 42px; border-radius: 12px; background: #8999df !important; color: #11103b !important; font-size: 13px !important; font-weight: 600 !important; transition: filter .18s; }
+.signup-submit:hover { filter: brightness(1.08); }
+.auth-switch { text-align: center; margin-top: 30px; font-size: 12px; }
+.auth-switch a { font-weight: 700; margin-left: 5px; }
+
+@media (max-width: 760px) {
+  .auth-signin { grid-template-columns: 1fr; min-height: 100dvh; padding: 18px; }
+  .signin-left { height: auto; min-height: 44px; }
+  .signin-brand { position: static; }
+  .orbit-art { display: none; }
+  .signin-card { min-height: min(78vh, 650px); padding: 20px; }
+  .signin-form h1 { margin-bottom: 28px; }
+  .signin-submit { right: 0; bottom: -125px; width: 68px; height: 68px; }
+  .auth-signup { grid-template-columns: 1fr; padding: 18px; }
+  .signup-story { display: none; }
+  .signup-form-wrap { width: min(100%, 460px); padding: 24px 0; }
+}
+@media (max-width: 430px) {
+  .signin-card { min-height: 78vh; }
+  .signin-fields { grid-template-columns: 1fr; gap: 20px; }
+  .signin-form h1 { font-size: 40px; margin-bottom: 26px; }
+  .auth-or { margin-top: 26px; }
+  .signup-heading h2 { font-size: 27px; }
+}
+

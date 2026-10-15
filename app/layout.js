@@ -2,7 +2,7 @@ import "./globals.css";
 import AppShell from "@/components/AppShell";
 
 export const metadata = {
-  title: "Flowbase – Dashboard",
+  title: "Flowbase – Sign in",
   description: "Flowbase lead management dashboard",
 };
 

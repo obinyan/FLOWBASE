@@ -16,6 +16,10 @@ export default function AppShell({ children }) {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  if (pathname === "/" || pathname === "/signup") {
+    return <>{children}</>;
+  }
+
   return (
     <div className="shell">
       <Sidebar open={open} onClose={() => setOpen(false)} />
