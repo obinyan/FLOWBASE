@@ -484,12 +484,63 @@ small { display: block; }
 .signup-form .google-mark { left: 14px; }
 .signup-form .auth-or { margin: 19px 12px 23px; }
 .signup-field { display: block; margin: 0 12px 23px; font-size: 13px; font-weight: 600; }
-.signup-field > input, .signup-field .password-input { display: block; width: 100%; margin-top: 3px; padding: 6px 23px; border: 0; border-bottom: 1px solid rgba(255,255,255,.48); border-radius: 0; background: transparent; outline: 0; font-size: 10px; color: #fff; }
-.signup-field > input:focus, .signup-field .password-input:focus-within { border-color: #fff; }
-.signup-field > input::placeholder, .signup-field .password-input input::placeholder { color: #c2beda; opacity: 1; }
-.signup-field .password-input { display: flex; gap: 130px; padding-right: 0; }
-.signup-field .password-input input { padding-left: 0; font-size: 10px; }
-.password-hint { display: block; margin: -9px 12px 37px; color: #e2dff4; font-size: 11px; }
+.signup-field > input {
+  display: block;
+  width: 100%;
+  height: 32px;
+  margin-top: 3px;
+  padding: 6px 23px;
+  border: 0;
+  border-bottom: 1px solid rgba(255,255,255,.48);
+  border-radius: 0;
+  background: transparent;
+  outline: 0;
+  font-size: 10px;
+  color: #fff;
+}
+
+.signup-field .password-input {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 32px;
+  margin-top: 3px;
+  padding: 0 8px 0 23px;
+  border: 0;
+  border-bottom: 1px solid rgba(255,255,255,.48);
+  border-radius: 0;
+  background: transparent;
+}
+
+.signup-field > input:focus,
+.signup-field .password-input:focus-within {
+  border-color: #fff;
+}
+
+.signup-field > input::placeholder,
+.signup-field .password-input input::placeholder {
+  color: #c2beda;
+  opacity: 1;
+}
+
+.signup-field .password-input input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 6px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  outline: 0;
+  font-size: 10px;
+  color: #fff;
+  box-shadow: none;
+}
+
+.signup-field .password-input button {
+  width: 24px;
+  height: 24px;
+}
 .signup-submit { width: 100%; height: 42px; border-radius: 12px; background: #8999df !important; color: #11103b !important; font-size: 13px !important; font-weight: 600 !important; transition: filter .18s; }
 .signup-submit:hover { filter: brightness(1.08); }
 .auth-switch { text-align: center; margin-top: 30px; font-size: 12px; }
