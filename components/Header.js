@@ -30,10 +30,10 @@ export default function Header() {
         {text}
       </h1>
       <div className="top-actions">
-        <Link href="/messages" className="icon-btn" aria-label="Messages">
+        <Link href="/inbox?view=messages" className="icon-btn" aria-label="Messages">
           <Icon name="mail" size={26} /><i className="dot" />
         </Link>
-        <Link href="/notifications" className="icon-btn" aria-label="Notifications and reminders">
+        <Link href="/inbox?view=notifications" className="icon-btn" aria-label="Notifications and reminders">
           <Icon name="bell" size={26} /><i className="dot" />
         </Link>
         <Link href="/leads/new" className="btn-add">

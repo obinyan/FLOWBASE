@@ -15,7 +15,11 @@ export default function Dashboard() {
 
       <section className="stats" aria-label="Summary">
         {STATS.map((s) => (
+<<<<<<< HEAD
           <Link key={s.id} href={s.id === "total" ? "/leads" : s.id === "new" ? "/leads?filter=new" : "/calendar?view=follow-ups"}
+=======
+          <Link key={s.id} href={s.id === "total" ? "/leads" : s.id === "new" ? "/leads?filter=new" : s.id === "overdue" ? "/leads" : "/calendar?view=follow-ups"}
+>>>>>>> a1942ae (New pages added)
             className={`panel stat stat-${s.id}`} aria-label={`${s.label}: ${s.value}. Open ${s.id === "total" || s.id === "new" ? "leads" : "follow-ups"}`}>
             {s.id === "total" || s.id === "new" ? (
               <>
@@ -25,7 +29,11 @@ export default function Dashboard() {
                 {s.icon && <span className="stat-icon"><Icon name={s.icon} size={22} /></span>}
               </>
             ) : (
+<<<<<<< HEAD
               <><h2 className="stat-label plain">{s.label}</h2><div className="stat-row"><strong>{s.value}</strong><span>{s.note}</span></div></>
+=======
+              <><h2 className="stat-label plain">{s.id === "overdue" ? "Priority leads" : s.label}</h2><div className="stat-row"><strong>{s.value}</strong><span>{s.note}</span></div></>
+>>>>>>> a1942ae (New pages added)
             )}
           </Link>
         ))}
@@ -47,7 +55,11 @@ export default function Dashboard() {
       </div>
 
       <section className="panel activity">
+<<<<<<< HEAD
         <div className="card-head"><div><h2>Recent Activity</h2><small>Latest updates across &nbsp;your leads</small></div><Link href="/activity" className="head-link">Activity log <Icon name="arrow" size={15} /></Link></div>
+=======
+        <div className="card-head"><div><h2>Recent Activity</h2><small>Latest updates across &nbsp;your leads</small></div><Link href="/tasks" className="head-link">View tasks <Icon name="arrow" size={15} /></Link></div>
+>>>>>>> a1942ae (New pages added)
         <ul className="activity-list">{ACTIVITY.map((a, i) => (
           <li key={i}><Link href={i === 0 ? "/leads?filter=new" : i === 1 ? "/leads?status=qualified" : i === 2 ? "/leads?search=Glitz%20N%20Glam" : "/leads?search=Shopkyluxury"} className="activity-row" aria-label={`${a.title}: ${a.sub}`}><span className={`act-icon ${a.tone}`}><Icon name={a.icon} size={14} strokeWidth={2} /></span><div className="act-text"><b>{a.title}</b><small>{a.sub}</small></div><time>{a.time}</time></Link></li>
         ))}</ul>

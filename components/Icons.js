@@ -18,6 +18,10 @@ const P = {
   clock: <><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></>,
   menu: <path d="M4 7h16M4 12h16M4 17h16"/>,
   close: <path d="M6 6l12 12M18 6L6 18"/>,
+  sort: <><path d="M8 4v16M4.5 8 8 4l3.5 4M16 20V4m-3.5 12 3.5 4 3.5-4"/></>,
+  filter: <><path d="M4 6h16M7 12h10m-7 6h4"/><circle cx="8" cy="6" r="1.5" fill="currentColor"/><circle cx="15" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="18" r="1.5" fill="currentColor"/></>,
+  more: <><circle cx="5" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="19" cy="12" r="1" fill="currentColor"/></>,
+  download: <><path d="M12 3v12m-5-5 5 5 5-5"/><path d="M5 17v3h14v-3"/></>,
 };
 
 export default function Icon({ name, size = 24, strokeWidth = 1.6, ...rest }) {
