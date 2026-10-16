@@ -567,8 +567,6 @@ small { display: block; }
   .signup-heading h2 { font-size: 27px; }
 }
 
-<<<<<<< HEAD
-=======
 /* ───────── Team workspace ───────── */
 .team-page { min-width: 0; display: flex; flex-direction: column; gap: 18px; padding-bottom: 18px; }
 .team-heading { min-height: 62px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 10px 20px 10px 24px; border-radius: 16px; background: rgba(49,37,132,.84); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); }
@@ -1464,4 +1462,3 @@ small { display: block; }
   background-clip: padding-box;
 }
 
->>>>>>> a1942ae (New pages added)
