@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./settings.css";
 import AppShell from "@/components/AppShell";
 
 export const metadata = {

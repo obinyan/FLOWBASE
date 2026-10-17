@@ -662,6 +662,7 @@ small { display: block; }
 .team-owner-bar > i > span { display: block; height: 100%; border-radius: inherit; background: #9477ff; }
 .team-owner-bar .fill-1 { background: #58c8f0; }.team-owner-bar .fill-2 { background: #53d5aa; }.team-owner-bar .fill-3 { background: #f4bb4d; }.team-owner-bar .fill-4 { background: #f28d77; }
 .team-recent { display: flex; flex-direction: column; gap: 13px; margin-top: 24px; padding-top: 17px; border-top: 1px solid rgba(174,163,226,.16); }
+.team-recent-empty { margin: 0; color: #bcb6d8; font-size: 8px; line-height: 1.6; }
 .team-recent article { display: grid; grid-template-columns: 31px minmax(0,1fr) auto; align-items: center; gap: 9px; }
 .team-recent article > i { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: #5d4bb4; color: #fff; font-size: 8px; font-style: normal; }
 .team-recent article > div { min-width: 0; display: flex; flex-direction: column; gap: 4px; }

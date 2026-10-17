@@ -5,6 +5,7 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Logo from "./Logo";
 import Icon from "./Icons";
+import AddLeadModal from "./AddLeadModal";
 
 export default function AppShell({ children }) {
   const [open, setOpen] = useState(false);
@@ -46,6 +47,7 @@ export default function AppShell({ children }) {
         </div>
         <Header />
         {children}
+        <AddLeadModal />
       </div>
     </div>
   );

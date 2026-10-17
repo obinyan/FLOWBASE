@@ -1,50 +1,70 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Icon from "@/components/Icons";
+import { localDateKey, readTasks, syncTaskCalendar, taskIsOverdue, TASKS_EVENT } from "@/lib/tasks";
 
 const COLORS = { Call: "#58c8f0", "Follow-up": "#9b82ff", Proposal: "#f4bb4d", Review: "#f4bb4d", Task: "#f4bb4d" };
-const INITIAL_EVENTS = [
-  { id: 1, date: "2026-10-02", time: "10:00", title: "Call", lead: "Kora Living", description: "Introductory conversation", kind: "Call", owner: "John" },
-  { id: 2, date: "2026-10-05", time: "09:30", title: "Follow-up", lead: "Glitz N Glam", description: "Check in after initial conversation", kind: "Follow-up", owner: "John" },
-  { id: 3, date: "2026-10-06", time: "11:00", title: "Proposal", lead: "Mira Beauty", description: "Review proposal details", kind: "Proposal", owner: "John" },
-  { id: 4, date: "2026-10-09", time: "14:00", title: "Call", lead: "Biba Kulture", description: "Discuss ecommerce needs", kind: "Call", owner: "John" },
-  { id: 5, date: "2026-10-12", time: "09:30", title: "Follow-up", lead: "Naya Home", description: "Follow-up is overdue", kind: "Follow-up", owner: "John", overdue: true },
-  { id: 6, date: "2026-10-13", time: "13:00", title: "Review", lead: "Shopkyluxury", description: "Review lead status and next steps", kind: "Review", owner: "Ada" },
-  { id: 18, date: "2026-10-14", time: "16:00", title: "Overdue follow-up", lead: "Lush Skin Co.", description: "Waiting for a response", kind: "Follow-up", owner: "John", overdue: true },
-  { id: 7, date: "2026-10-16", time: "09:30", title: "Discovery call", lead: "Biba Kulture", description: "Discuss ecommerce needs", kind: "Call", owner: "John" },
-  { id: 8, date: "2026-10-16", time: "11:00", title: "Send revised proposal", lead: "Glitz N Glam", description: "Attach pricing and timeline", kind: "Proposal", owner: "John" },
-  { id: 9, date: "2026-10-16", time: "13:30", title: "Follow-up", lead: "Shopkyluxury", description: "Confirm inventory and payment", kind: "Follow-up", owner: "John" },
-  { id: 10, date: "2026-10-16", time: "15:00", title: "Review overdue lead", lead: "Naya Home", description: "No response in 5 days", kind: "Review", owner: "Ada", overdue: true },
-  { id: 11, date: "2026-10-17", time: "10:00", title: "Follow-up", lead: "Biba Kulture", description: "Tomorrow at 10:00 AM", kind: "Follow-up", owner: "John" },
-  { id: 12, date: "2026-10-19", time: "10:30", title: "Call", lead: "Lush Skin Co.", description: "Discuss product range", kind: "Call", owner: "John" },
-  { id: 13, date: "2026-10-20", time: "12:00", title: "Follow-up", lead: "Mira Beauty", description: "Confirm feedback", kind: "Follow-up", owner: "John" },
-  { id: 21, date: "2026-10-21", time: "10:00", title: "Follow-up", lead: "Naya Home", description: "Check on proposal review", kind: "Follow-up", owner: "John" },
-  { id: 14, date: "2026-10-22", time: "09:00", title: "Review", lead: "Kora Living", description: "Review revised requirements", kind: "Review", owner: "Ada" },
-  { id: 22, date: "2026-10-24", time: "11:00", title: "Follow-up", lead: "Shopkyluxury", description: "Confirm inventory update", kind: "Follow-up", owner: "John" },
-  { id: 15, date: "2026-10-26", time: "14:30", title: "Call", lead: "Naya Home", description: "Check delivery timeline", kind: "Call", owner: "John" },
-  { id: 16, date: "2026-10-28", time: "10:00", title: "Follow-up", lead: "Biba Kulture", description: "Confirm next steps", kind: "Follow-up", owner: "John" },
-  { id: 17, date: "2026-10-30", time: "15:00", title: "Proposal", lead: "Glitz N Glam", description: "Review final proposal", kind: "Proposal", owner: "John" },
-];
-const TODAY = "2026-10-16";
+const CALENDAR_KEY = "flowbase:calendar:v2";
+const TODAY = localDateKey();
 const pad = (value) => String(value).padStart(2, "0");
 const toKey = (year, month, day) => `${year}-${pad(month + 1)}-${pad(day)}`;
 const dateLabel = (key) => new Date(`${key}T12:00:00`).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 const timeLabel = (time) => {
-  const [hour, minute] = time.split(":").map(Number);
-  return `${pad(hour % 12 || 12)}:${pad(minute)} ${hour >= 12 ? "PM" : "AM"}`;
+  const [clock, period] = String(time || "").trim().split(/\s+/);
+  const [rawHour, rawMinute] = clock.split(":").map(Number);
+  if (!Number.isFinite(rawHour) || !Number.isFinite(rawMinute)) return time;
+  const hour = period ? rawHour % 12 + (period.toUpperCase() === "PM" ? 12 : 0) : rawHour;
+  return `${pad(hour % 12 || 12)}:${pad(rawMinute)} ${hour >= 12 ? "PM" : "AM"}`;
 };
 
+function readCalendarEvents() {
+  let savedEvents = [];
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(CALENDAR_KEY) || "[]");
+    if (Array.isArray(parsed)) savedEvents = parsed.filter((event) => event && !event.taskId && !String(event.id).startsWith("task-"));
+  } catch {}
+  const taskEvents = readTasks().filter((task) => task && !task.completed).map((task) => ({
+    id: `task-${task.id}`,
+    taskId: task.id,
+    date: task.due,
+    time: task.time || "09:00",
+    title: task.title,
+    lead: task.lead,
+    description: task.detail || "Task for this lead",
+    kind: "Task",
+    owner: task.owner,
+    overdue: taskIsOverdue(task),
+  }));
+  return [...savedEvents, ...taskEvents];
+}
+
 export default function CalendarBoard() {
-  const [events, setEvents] = useState(INITIAL_EVENTS);
+  const [events, setEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(TODAY);
-  const [displayDate, setDisplayDate] = useState(() => new Date(2026, 9, 1));
+  const [displayDate, setDisplayDate] = useState(() => new Date(new Date().getFullYear(), new Date().getMonth(), 1));
   const [view, setView] = useState("Month");
   const [filters, setFilters] = useState({ mine: false, followups: false, overdue: false });
   const [query, setQuery] = useState("");
   const [eventMenu, setEventMenu] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [draft, setDraft] = useState({ title: "", lead: "", description: "", date: TODAY, time: "10:00", kind: "Call", owner: "John" });
+
+  useEffect(() => {
+    const refreshEvents = () => setEvents(readCalendarEvents());
+    const refreshStorage = (event) => {
+      if (!event.key || event.key === CALENDAR_KEY || event.key === "flowbase:tasks:v2") refreshEvents();
+    };
+    refreshEvents();
+    window.addEventListener(TASKS_EVENT, refreshEvents);
+    window.addEventListener("flowbase:calendar-updated", refreshEvents);
+    window.addEventListener("storage", refreshStorage);
+    return () => {
+      window.removeEventListener(TASKS_EVENT, refreshEvents);
+      window.removeEventListener("flowbase:calendar-updated", refreshEvents);
+      window.removeEventListener("storage", refreshStorage);
+    };
+  }, []);
 
   const year = displayDate.getFullYear();
   const month = displayDate.getMonth();
@@ -92,21 +112,28 @@ export default function CalendarBoard() {
     }
     setDisplayDate((current) => new Date(current.getFullYear(), current.getMonth() + amount, 1));
   };
-  const goToday = () => { setSelectedDate(TODAY); setDisplayDate(new Date(2026, 9, 1)); };
+  const goToday = () => { setSelectedDate(TODAY); setDisplayDate(new Date(new Date().getFullYear(), new Date().getMonth(), 1)); };
   const toggleFilter = (name) => setFilters((current) => ({ ...current, [name]: !current[name] }));
   const openAddEvent = (date = selectedDate) => { setDraft((current) => ({ ...current, date })); setModalOpen(true); };
   const addEvent = (event) => {
     event.preventDefault();
     if (!draft.title.trim() || !draft.lead.trim()) return;
     const added = { ...draft, id: Date.now(), overdue: false };
-    setEvents((current) => [...current, added]);
+    const nextEvents = [...events, added];
+    setEvents(nextEvents);
+    syncTaskCalendar(readTasks(), nextEvents);
     setSelectedDate(draft.date);
     const eventDate = new Date(`${draft.date}T12:00:00`);
     setDisplayDate(new Date(eventDate.getFullYear(), eventDate.getMonth(), 1));
     setModalOpen(false);
     setDraft((current) => ({ ...current, title: "", lead: "", description: "" }));
   };
-  const removeEvent = (id) => { setEvents((current) => current.filter((event) => event.id !== id)); setEventMenu(false); };
+  const removeEvent = (id) => {
+    const nextEvents = events.filter((event) => event.id !== id);
+    setEvents(nextEvents);
+    syncTaskCalendar(readTasks(), nextEvents);
+    setEventMenu(false);
+  };
 
   return <div className="calendar-page">
     <section className="calendar-heading panel"><div><h1>Calendar</h1><p>Plan follow-ups and keep every conversation on track.</p></div><div className="calendar-heading-actions"><label className="calendar-search"><Icon name="search" size={16} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search" aria-label="Search events" />{query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search"><Icon name="close" size={14} /></button>}</label><button className="calendar-add" type="button" onClick={() => openAddEvent()}><Icon name="plus" size={16} />Add event</button></div></section>
@@ -125,7 +152,7 @@ export default function CalendarBoard() {
     </section>
 
     <aside className="calendar-agenda"><header className="agenda-panel-heading"><div><h3>{dateLabel(selectedDate)}</h3><p>{selectedEvents.length} events scheduled</p></div><div className="calendar-agenda-menu"><button type="button" aria-label="Event options" aria-expanded={eventMenu} onClick={() => setEventMenu((value) => !value)}><Icon name="more" size={19} /></button>{eventMenu && <div className="pipeline-popover"><button type="button" onClick={() => openAddEvent()}>Add event</button><button type="button" onClick={() => { setFilters({ mine: false, followups: false, overdue: false }); setQuery(""); setEventMenu(false); }}>Clear filters</button></div>}</div></header>
-      <div className="calendar-agenda-list">{selectedEvents.length ? selectedEvents.map((event) => <article className="calendar-agenda-event" key={event.id} style={{ "--event-color": COLORS[event.kind] || COLORS.Task }}><time>{timeLabel(event.time)}</time><i className="agenda-event-dot" /><div className="agenda-event-info"><b>{event.title}</b><span>{event.lead}</span><small>{event.description}</small></div><span className="agenda-event-tag">{event.overdue ? "Overdue" : event.kind === "Call" ? "Call" : event.kind === "Follow-up" ? "Follow-up" : "Task"}</span>{event.overdue && <button className="agenda-event-remove" type="button" onClick={() => removeEvent(event.id)} aria-label={`Remove ${event.title}`}><Icon name="close" size={13} /></button>}</article>) : <div className="calendar-empty"><Icon name="calendar" size={25} /><p>No events scheduled for this day.</p><button type="button" onClick={() => openAddEvent()}>Add an event</button></div>}</div>
+      <div className="calendar-agenda-list">{selectedEvents.length ? selectedEvents.map((event) => <article className="calendar-agenda-event" key={event.id} style={{ "--event-color": COLORS[event.kind] || COLORS.Task }}><time>{timeLabel(event.time)}</time><i className="agenda-event-dot" /><div className="agenda-event-info"><b>{event.title}</b><span>{event.lead}</span><small>{event.description}</small></div><span className="agenda-event-tag">{event.overdue ? "Overdue" : event.kind === "Call" ? "Call" : event.kind === "Follow-up" ? "Follow-up" : "Task"}</span>{event.overdue && !event.taskId && <button className="agenda-event-remove" type="button" onClick={() => removeEvent(event.id)} aria-label={`Remove ${event.title}`}><Icon name="close" size={13} /></button>}</article>) : <div className="calendar-empty"><Icon name="calendar" size={25} /><p>No events scheduled for this day.</p><button type="button" onClick={() => openAddEvent()}>Add an event</button></div>}</div>
       <div className="calendar-up-next"><span>UP NEXT</span>{(() => { const next = visibleEvents.filter((event) => event.date > selectedDate).sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time))[0]; return next ? <article><strong>{new Date(`${next.date}T12:00:00`).getDate()}<small>{new Date(`${next.date}T12:00:00`).toLocaleDateString("en-US", { month: "short" }).toUpperCase()}</small></strong><div><b>{next.lead} · {next.title}</b><span>{next.description}</span><small>Owner: {next.owner}</small></div></article> : <p>No upcoming events.</p>; })()}<button type="button" className="calendar-schedule-button" onClick={() => { setView("Week"); const next = visibleEvents.filter((event) => event.date > selectedDate).sort((a, b) => a.date.localeCompare(b.date))[0]; if (next) setSelectedDate(next.date); }}>Open full schedule <Icon name="arrow" size={14} /></button></div>
     </aside></div>
 

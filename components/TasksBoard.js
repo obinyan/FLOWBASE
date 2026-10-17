@@ -3,41 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Icon from "@/components/Icons";
+import { localDateKey, readTasks, syncTaskCalendar, taskIsOverdue, writeTasks } from "@/lib/tasks";
 
-const TODAY = "2026-10-16";
-const TASK_SEED = [
-  { title: "Send revised proposal", lead: "Glitz N Glam", detail: "Attach pricing options and delivery timeline", priority: "High", time: "09:30 AM", owner: "John", due: TODAY },
-  { title: "Discovery call", lead: "Biba Kulture", detail: "Discuss ecommerce needs", priority: "High", time: "10:00 AM", owner: "You", due: TODAY },
-  { title: "Confirm inventory and payment", lead: "Shopkyluxury", detail: "WhatsApp follow-up", priority: "Medium", time: "01:30 PM", owner: "You", due: TODAY },
-  { title: "Review overdue lead", lead: "Naya Home", detail: "No response in 5 days", priority: "Urgent", time: "03:00 PM", owner: "John", due: TODAY },
-  { title: "Confirm delivery estimate", lead: "Lush Skin Co.", detail: "Send the updated delivery estimate", priority: "Medium", time: "04:00 PM", owner: "You", due: TODAY, overdue: true },
-  { title: "Share revised invoice", lead: "Ola Essentials", detail: "Invoice is waiting for review", priority: "Medium", time: "04:30 PM", owner: "Amaka", due: TODAY, overdue: true },
-  { title: "Follow up on quotation", lead: "Kora Living", detail: "Confirm the quote was received", priority: "Low", time: "05:00 PM", owner: "John", due: TODAY },
-  { title: "Update lead notes", lead: "Mira Beauty Studio", detail: "Add notes from the last conversation", priority: "Medium", time: "05:30 PM", owner: "You", due: TODAY, overdue: true },
-  { title: "Prepare onboarding notes", lead: "Kora Living", detail: "New client handoff", priority: "Low", time: "10:00 AM", owner: "You", due: "2026-10-17" },
-  { title: "Share revised estimate", lead: "Lush Skin Co.", detail: "Follow-up by email", priority: "Medium", time: "01:30 PM", owner: "John", due: "2026-10-18" },
-  { title: "Check in on proposal", lead: "Mira Beauty Studio", detail: "Confirm decision date", priority: "Medium", time: "11:00 AM", owner: "You", due: "2026-10-19" },
-  { title: "Send product catalogue", lead: "Adorn Lagos", detail: "Share current product catalogue", priority: "Low", time: "02:00 PM", owner: "Amaka", due: "2026-10-20" },
-  { title: "Schedule next conversation", lead: "Soko Home", detail: "Find a suitable time for a call", priority: "Medium", time: "09:30 AM", owner: "Ada", due: "2026-10-21" },
-  { title: "Review updated requirements", lead: "The Loom House", detail: "Prepare notes for the review", priority: "Low", time: "10:00 AM", owner: "John", due: "2026-10-22" },
-  { title: "Send service agreement", lead: "Biba Kulture", detail: "Share the agreement for review", priority: "High", time: "11:30 AM", owner: "You", due: "2026-10-23" },
-  { title: "Confirm meeting attendees", lead: "Glitz N Glam", detail: "Check who will join the meeting", priority: "Low", time: "03:00 PM", owner: "Amaka", due: "2026-10-24" },
-  { title: "Prepare campaign summary", lead: "Mira Beauty Studio", detail: "Summarize campaign requirements", priority: "Medium", time: "10:00 AM", owner: "John", due: "2026-10-25" },
-  { title: "Follow up on sample order", lead: "Shopkyluxury", detail: "Confirm sample order status", priority: "Medium", time: "01:00 PM", owner: "Ada", due: "2026-10-26" },
-  { title: "Send revised scope", lead: "Naya Home", detail: "Include the agreed changes", priority: "High", time: "09:00 AM", owner: "You", due: "2026-10-27" },
-  { title: "Review final pricing", lead: "Ola Essentials", detail: "Check final pricing before sending", priority: "Medium", time: "02:30 PM", owner: "Amaka", due: "2026-10-28" },
-  { title: "Confirm next steps", lead: "Kora Living", detail: "Agree the next delivery milestone", priority: "Low", time: "10:30 AM", owner: "You", due: "2026-10-29" },
-  { title: "Book a product walkthrough", lead: "Lush Skin Co.", detail: "Arrange a product walkthrough", priority: "Medium", time: "11:00 AM", owner: "Ada", due: "2026-10-30" },
-  { title: "Update contact details", lead: "Adorn Lagos", detail: "Check contact and billing details", priority: "Low", time: "03:30 PM", owner: "Amaka", due: "2026-10-31" },
-  { title: "Prepare monthly review", lead: "Glitz N Glam", detail: "Gather results for the monthly review", priority: "Medium", time: "09:30 AM", owner: "John", due: "2026-11-01" },
-  { title: "Draft renewal options", lead: "Biba Kulture", detail: "Prepare renewal options", priority: "High", time: "01:30 PM", owner: "Ada", due: "2026-11-02" },
-  { title: "Send thank-you note", lead: "Kora Living", detail: "Thank them for the project kickoff", priority: "Low", time: "10:00 AM", owner: "You", due: "2026-10-15", completed: true, seedCompleted: true },
-  { title: "Share call summary", lead: "Mira Beauty Studio", detail: "Send a recap of the discovery call", priority: "Medium", time: "02:00 PM", owner: "John", due: "2026-10-14", completed: true, seedCompleted: true },
-];
+const TODAY = localDateKey();
 const fmtDate = (key) => key === TODAY ? "Today" : new Date(`${key}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 
 export default function TasksBoard() {
-  const [tasks, setTasks] = useState(() => TASK_SEED.map((task, index) => ({ ...task, id: index + 1, completed: Boolean(task.completed) })));
+  const [tasks, setTasks] = useState([]);
+  const [today, setToday] = useState(TODAY);
   const [storageReady, setStorageReady] = useState(false);
   const [tab, setTab] = useState("My tasks");
   const [query, setQuery] = useState("");
@@ -50,18 +23,28 @@ export default function TasksBoard() {
 
   useEffect(() => {
     try {
-      const saved = window.localStorage.getItem("flowbase:tasks:v1");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) setTasks(parsed);
+      const reset = window.localStorage.getItem("flowbase:tasks:demo-reset-v1");
+      if (!reset) {
+        window.localStorage.removeItem("flowbase:tasks:v1");
+        window.localStorage.setItem("flowbase:tasks:demo-reset-v1", "done");
       }
+      setTasks(readTasks());
+      setToday(localDateKey());
     } catch {}
     setStorageReady(true);
   }, []);
   useEffect(() => {
     if (!storageReady || typeof window === "undefined") return;
-    try { window.localStorage.setItem("flowbase:tasks:v1", JSON.stringify(tasks)); } catch {}
+    writeTasks(tasks);
+    syncTaskCalendar(tasks);
   }, [tasks, storageReady]);
+  useEffect(() => {
+    const refresh = () => { setTasks(readTasks()); setToday(localDateKey()); };
+    const timer = window.setInterval(() => setToday(localDateKey()), 60000);
+    window.addEventListener("storage", refresh);
+    window.addEventListener("flowbase:tasks-updated", refresh);
+    return () => { window.clearInterval(timer); window.removeEventListener("storage", refresh); window.removeEventListener("flowbase:tasks-updated", refresh); };
+  }, []);
 
   const filtered = useMemo(() => tasks.filter((task) => {
     const term = query.trim().toLowerCase();
@@ -69,15 +52,15 @@ export default function TasksBoard() {
       && (tab === "All tasks" || task.owner === "You")
       && (priority === "Priority" || task.priority === priority)
       && (!filters.assigned || task.owner === "You")
-      && (!filters.due || task.due === TODAY)
-      && (!filters.overdue || task.overdue)
+      && (!filters.due || task.due === today)
+      && (!filters.overdue || taskIsOverdue(task, today))
       && (!filters.completed || task.completed);
-  }).sort((a, b) => a.due.localeCompare(b.due) || a.time.localeCompare(b.time)), [tasks, query, tab, priority, filters]);
+  }).sort((a, b) => a.due.localeCompare(b.due) || a.time.localeCompare(b.time)), [tasks, query, tab, priority, filters, today]);
 
-  const dueToday = tasks.filter((task) => !task.completed && task.due === TODAY).length;
-  const upcoming = tasks.filter((task) => !task.completed && task.due > TODAY).length;
-  const overdue = tasks.filter((task) => !task.completed && task.overdue).length;
-  const completedCount = 32 + tasks.filter((task) => task.completed && !task.seedCompleted).length;
+  const dueToday = tasks.filter((task) => !task.completed && task.due === today).length;
+  const upcoming = tasks.filter((task) => !task.completed && task.due > today).length;
+  const overdue = tasks.filter((task) => taskIsOverdue(task, today)).length;
+  const completedCount = tasks.filter((task) => task.completed).length;
   const myActiveCount = tasks.filter((task) => task.owner === "You" && !task.completed).length;
   const allActiveCount = tasks.filter((task) => !task.completed).length;
   const completedToday = tasks.filter((task) => task.completed && task.due === TODAY).length;
@@ -88,17 +71,18 @@ export default function TasksBoard() {
   const addTask = (event) => {
     event.preventDefault();
     if (!draft.title.trim() || !draft.lead.trim()) return;
-    setTasks((current) => [...current, { ...draft, id: Date.now(), due: draft.date, detail: draft.detail || "Task for this lead", completed: false, overdue: false }]);
+    setTasks((current) => [...current, { ...draft, id: Date.now(), due: draft.date, detail: draft.detail || "Task for this lead", completed: false }]);
     setDraft({ title: "", lead: "", detail: "", priority: "Medium", date: TODAY, time: "10:00", owner: "You" });
     setFormOpen(false);
   };
   const grouped = {
-    today: filtered.filter((task) => task.due === TODAY && !task.completed),
-    overdue: filtered.filter((task) => task.overdue && task.due !== TODAY && !task.completed),
-    upcoming: filtered.filter((task) => task.due > TODAY && !task.completed),
+    today: filtered.filter((task) => task.due === today && !task.completed),
+    overdue: filtered.filter((task) => taskIsOverdue(task, today)),
+    upcoming: filtered.filter((task) => task.due > today && !task.completed),
     completed: filtered.filter((task) => task.completed),
   };
-  const visibleGroups = filters.completed ? [["Completed", grouped.completed]] : [["Today · Friday, Oct 16", grouped.today], ["Overdue", grouped.overdue], ["Upcoming", grouped.upcoming]];
+  const todayLabel = new Date(`${today}T12:00:00`).toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+  const visibleGroups = filters.completed ? [["Completed", grouped.completed]] : [[`Today · ${todayLabel}`, grouped.today], ["Overdue", grouped.overdue], ["Upcoming", grouped.upcoming]];
   const workload = ["You", "John", "Amaka"].map((owner) => ({ owner, count: tasks.filter((task) => task.owner === owner && !task.completed).length }));
 
   return <div className="tasks-page">
@@ -121,13 +105,13 @@ export default function TasksBoard() {
         <label className="task-check"><input type="checkbox" checked={task.completed} onChange={() => updateTask(task.id, { completed: !task.completed })} aria-label={`${task.completed ? "Reopen" : "Complete"} ${task.title}`} /><span /></label>
         <Link href={`/leads?search=${encodeURIComponent(task.lead)}`} className="task-description"><b>{task.title}</b><small>{task.lead} · {task.detail}</small></Link>
         <span className={`task-priority-badge ${task.priority.toLowerCase()}`}><i />{task.priority}</span>
-        <span className="task-time"><Icon name="calendar" size={12} />{task.due === TODAY ? task.time : `${fmtDate(task.due)}, ${task.time}`}</span>
+        <span className={`task-time ${taskIsOverdue(task, today) ? "is-overdue" : ""}`}><Icon name="calendar" size={12} />{taskIsOverdue(task, today) ? `Overdue · ${fmtDate(task.due)}` : task.due === today ? task.time : `${fmtDate(task.due)}, ${task.time}`}</span>
         <span className="task-assignee"><i>{task.owner === "You" ? "Y" : task.owner === "John" ? "J" : task.owner === "Ada" ? "A" : "A"}</i>{task.owner}</span>
         <div className="task-menu-wrap"><button type="button" aria-label={`Actions for ${task.title}`} aria-expanded={menuId === task.id} onClick={() => setMenuId(menuId === task.id ? null : task.id)}><Icon name="more" size={18} /></button>{menuId === task.id && <div className="pipeline-popover"><button type="button" onClick={() => { updateTask(task.id, { priority: task.priority === "High" ? "Medium" : "High" }); setMenuId(null); }}>{task.priority === "High" ? "Lower priority" : "Mark high priority"}</button><button type="button" onClick={() => { updateTask(task.id, { owner: task.owner === "You" ? "John" : "You" }); setMenuId(null); }}>{task.owner === "You" ? "Assign to John" : "Assign to me"}</button><button type="button" onClick={() => { updateTask(task.id, { completed: !task.completed }); setMenuId(null); }}>{task.completed ? "Reopen task" : "Mark complete"}</button></div>}</div>
       </article>)}</div></section> : null)}{visibleGroups.every(([, items]) => items.length === 0) && <div className="tasks-empty"><Icon name="tasks" size={26} /><p>No tasks match these filters.</p><button type="button" onClick={() => { setQuery(""); setPriority("Priority"); setFilters({ assigned: false, due: false, overdue: false, completed: false }); }}>Clear filters</button></div>}</div>
     </section>
 
-    <aside className="tasks-focus-panel"><header><h2>Today’s focus</h2><p>Friday, October 16</p></header><section className="task-progress-card"><span>DAILY PROGRESS</span><div><b>{Math.min(5 + completedToday, 8)} of 8 tasks completed</b><strong>{Math.min(62 + completedToday * 12, 100)}%</strong></div><i><b style={{ width: `${Math.min(62 + completedToday * 12, 100)}%` }} /></i></section>
+    <aside className="tasks-focus-panel"><header><h2>Today’s focus</h2><p>{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</p></header><section className="task-progress-card"><span>DAILY PROGRESS</span><div><b>{completedToday} of {tasks.length} tasks completed</b><strong>{tasks.length ? Math.round(completedToday / tasks.length * 100) : 0}%</strong></div><i><b style={{ width: `${tasks.length ? Math.round(completedToday / tasks.length * 100) : 0}%` }} /></i></section>
       <section className="task-priority-focus"><span>PRIORITY TASK</span>{focusedTask ? <article><b><i />{focusedTask.priority} priority</b><h3>{focusedTask.title}</h3><p>{focusedTask.lead}</p><small>Due today at {focusedTask.time}</small><Link href={`/leads?search=${encodeURIComponent(focusedTask.lead)}`}>Open lead details <Icon name="arrow" size={13} /></Link></article> : <p>All high priority tasks are complete.</p>}</section>
       <section className="task-workload"><span>TEAM WORKLOAD</span>{workload.map(({ owner, count }, index) => <div className="workload-row" key={owner}><i className={`workload-avatar workload-${index}`}>{owner === "You" ? "Y" : owner[0]}</i><div><p><b>{owner}</b><small>{count} tasks</small></p><span><i style={{ width: `${Math.min(22 + count * 12, 92)}%` }} /></span></div></div>)}</section>
       <section className="task-tip"><span>QUICK TIP</span><p>Complete a task to keep its lead moving through the pipeline.</p><button type="button" onClick={() => { setFilters({ assigned: false, due: false, overdue: false, completed: true }); setTab("All tasks"); }}>View completed tasks <Icon name="arrow" size={13} /></button></section>
