@@ -39,15 +39,11 @@ export default function TasksBoard() {
     syncTaskCalendar(tasks);
   }, [tasks, storageReady]);
   useEffect(() => {
-<<<<<<< HEAD
-    const refresh = () => { setTasks(readTasks()); setToday(localDateKey()); };
-=======
     const refresh = () => {
       const latestTasks = readTasks();
       setTasks((current) => JSON.stringify(current) === JSON.stringify(latestTasks) ? current : latestTasks);
       setToday(localDateKey());
     };
->>>>>>> 9ccbd2c (Task frezze fix and additional spacing for other pages)
     const timer = window.setInterval(() => setToday(localDateKey()), 60000);
     window.addEventListener("storage", refresh);
     window.addEventListener("flowbase:tasks-updated", refresh);
