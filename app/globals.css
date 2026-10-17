@@ -1426,6 +1426,7 @@ small { display: block; }
   -webkit-backdrop-filter: var(--blur);
   backdrop-filter: var(--blur);
 }
+/* updates made*/
 .pipeline-column {
   border-color: rgba(190,179,255,.24);
   background: linear-gradient(160deg, rgba(82,66,157,.3), rgba(18,14,62,.35));
