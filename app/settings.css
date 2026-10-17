@@ -160,7 +160,10 @@
 @media(max-width:700px) { .settings-heading { align-items:flex-start; padding:17px; }.settings-heading-icon { width:39px;height:39px; }.settings-heading h1 { font-size:18px; }.settings-heading p { max-width:340px; line-height:1.5; }.settings-help { position:static; margin-left:auto; height:31px; padding:0 9px; }.settings-layout { grid-template-columns:minmax(0,1fr); }.settings-menu { position:static; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px; padding:12px; }.settings-menu-label,.settings-menu-tip { grid-column:1/-1; }.settings-menu-item { min-height:51px; }.settings-menu-item small { font-size:7px; }.settings-content { padding:0 14px; }.settings-section { padding:18px 0; }.settings-fields.two-col { grid-template-columns:minmax(0,1fr); }.settings-photo-row { padding:10px; }.settings-row { padding:9px; }.settings-row .settings-button { padding:0 8px; font-size:8px; }.settings-footer { margin:0 -14px; padding:9px 14px; } }
 @media(max-width:400px) { .settings-heading { gap:9px; padding:13px; }.settings-heading h1 { font-size:16px; }.settings-heading p { font-size:10px; }.settings-heading-icon { width:34px;height:34px; }.settings-help { gap:4px; padding:0 7px; font-size:9px; }.settings-menu { grid-template-columns:minmax(0,1fr); }.settings-menu-label,.settings-menu-tip { grid-column:auto; }.settings-menu-item { min-height:48px; }.settings-row-icon { display:none; }.settings-integration { gap:8px; }.integration-status { font-size:7px; }.settings-footer > span { font-size:8px; }.settings-save { padding:0 11px; } }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 2d04d83 (Add dashboard and signup pages)
 
 /* Keep menu, popover, and dialog content easy to scan across every page. */
 .pipeline-popover,
@@ -208,4 +211,7 @@
   .inbox-modal { padding: 18px; }
   .mobile-search-popover { padding: 10px; }
 }
+<<<<<<< HEAD
 >>>>>>> 9ccbd2c (Task frezze fix and additional spacing for other pages)
+=======
+>>>>>>> 2d04d83 (Add dashboard and signup pages)
