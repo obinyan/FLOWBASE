@@ -190,7 +190,7 @@
 .inbox-modal label { gap: 9px; margin-bottom: 16px; }
 .pipeline-modal input,
 .pipeline-modal select,
-.team-custom-role { height: 44px; padding: 10px 12px; }
+.team-custom-role { height: 44px; padding: 10px 12px; margin-bottom: 10px; }
 .inbox-modal input,
 .inbox-modal textarea { padding: 10px 12px; }
 .pipeline-modal footer,
