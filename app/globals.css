@@ -1492,7 +1492,7 @@ small { display: block; }
   min-width: 0;
   flex-direction: column;
   gap: 5px;
-  margin: 5px 0 10px 0;
+  margin: 5px 10px 10px 0;
 }
 .add-lead-fields input,
 .add-lead-fields select,
