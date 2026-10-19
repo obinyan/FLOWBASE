@@ -1426,7 +1426,6 @@ small { display: block; }
   -webkit-backdrop-filter: var(--blur);
   backdrop-filter: var(--blur);
 }
-/* updates made*/
 .pipeline-column {
   border-color: rgba(190,179,255,.24);
   background: linear-gradient(160deg, rgba(82,66,157,.3), rgba(18,14,62,.35));
@@ -1462,5 +1461,67 @@ small { display: block; }
 .pipeline-workspace,.pipeline-column,.pipeline-lead-card,.task-row,.calendar-up-next > article {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
+}
+
+/* Add lead: keep the dialog within the viewport and scroll its form on small screens. */
+.add-lead-backdrop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.add-lead-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 620px);
+  max-height: calc(100vh - 36px);
+  max-height: calc(100dvh - 36px);
+  margin: auto 0;
+  overflow: hidden;
+}
+.add-lead-modal > header { flex: none; }
+.add-lead-modal form {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.add-lead-fields label {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+  margin: 0;
+}
+.add-lead-fields input,
+.add-lead-fields select,
+.add-lead-fields textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+.add-lead-fields textarea {
+  min-height: 88px;
+  padding: 10px 12px;
+  border: 1px solid rgba(193,180,255,.3);
+  border-radius: 9px;
+  outline: 0;
+  background: rgba(12,8,58,.45);
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.45;
+  resize: vertical;
+}
+.add-lead-fields textarea:focus { border-color: #a797ff; }
+@media(max-width:600px) {
+  .add-lead-backdrop { padding: 12px; }
+  .add-lead-modal {
+    max-height: calc(100vh - 24px);
+    max-height: calc(100dvh - 24px);
+    padding: 18px;
+  }
 }
 
