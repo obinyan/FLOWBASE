@@ -14,9 +14,14 @@ export default function Header() {
   const [period, setPeriod] = useState("Good morning");
   const [unreadMessages, setUnreadMessages] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(false);
+  const [avatarSrc, setAvatarSrc] = useState(AVATAR_SRC);
 
   useEffect(() => {
     const update = () => setPeriod(greetingForHour(new Date().getHours()));
+    const updateAvatar = () => {
+      try { setAvatarSrc(localStorage.getItem("flowbase:settings-photo") || AVATAR_SRC); }
+      catch { setAvatarSrc(AVATAR_SRC); }
+    };
     const readInbox = () => {
       try {
         const inbox = readInboxData();
@@ -24,12 +29,17 @@ export default function Header() {
         setUnreadNotifications(inbox.notifications.some((item) => item.unread));
       } catch { setUnreadMessages(false); setUnreadNotifications(false); }
     };
+    const onStorage = (event) => {
+      if (event.key === "flowbase:settings-photo") updateAvatar();
+      readInbox();
+    };
     try { setSavedGreeting(localStorage.getItem("flowbase:greeting") || "Good morning John"); } catch {}
-    update(); readInbox();
+    update(); readInbox(); updateAvatar();
     const clock = window.setInterval(update, 60000);
-    window.addEventListener("storage", readInbox);
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("flowbase:profile-photo-updated", updateAvatar);
     window.addEventListener("flowbase:inbox-updated", readInbox);
-    return () => { window.clearInterval(clock); window.removeEventListener("storage", readInbox); window.removeEventListener("flowbase:inbox-updated", readInbox); };
+    return () => { window.clearInterval(clock); window.removeEventListener("storage", onStorage); window.removeEventListener("flowbase:profile-photo-updated", updateAvatar); window.removeEventListener("flowbase:inbox-updated", readInbox); };
   }, []);
 
   const save = (event) => {
@@ -46,7 +56,7 @@ export default function Header() {
       <Link href="/inbox?view=messages" className="icon-btn" aria-label="Messages"><Icon name="mail" size={26} />{unreadMessages && <i className="dot" />}</Link>
       <Link href="/inbox?view=notifications" className="icon-btn" aria-label="Notifications and reminders"><Icon name="bell" size={26} />{unreadNotifications && <i className="dot" />}</Link>
       <button type="button" className="btn-add" onClick={() => window.dispatchEvent(new Event(ADD_LEAD_EVENT))}><Icon name="plus" size={18} strokeWidth={2} /><span>Add lead</span></button>
-      <Link href="/profile" className="avatar" aria-label="Your profile"><img src={AVATAR_SRC} alt="" /></Link>
+      <Link href="/settings#profile" className="avatar" aria-label="Your profile"><img src={avatarSrc} alt="" /></Link>
     </div>
   </header>;
 }

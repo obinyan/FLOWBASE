@@ -61,7 +61,7 @@ export default function SettingsPage() {
     if (!file) return;
     if (!file.type.startsWith("image/")) { setNotice("Choose an image file to upload."); return; }
     const reader = new FileReader();
-    reader.onload = () => { const value = String(reader.result); setPhoto(value); try { localStorage.setItem("flowbase:settings-photo", value); } catch {} };
+    reader.onload = () => { const value = String(reader.result); setPhoto(value); try { localStorage.setItem("flowbase:settings-photo", value); } catch {} window.dispatchEvent(new Event("flowbase:profile-photo-updated")); };
     reader.readAsDataURL(file);
   };
 
@@ -85,7 +85,7 @@ export default function SettingsPage() {
             <SectionTitle title="Profile" description="Your personal details and how they appear to your team." icon="user" />
             <div className="settings-photo-row">
               <div className="settings-photo">{photo ? <img src={photo} alt="Profile" /> : <span>{`${form.firstName?.[0] || "J"}${form.lastName?.[0] || "O"}`}</span>}</div>
-              <div className="settings-photo-copy"><strong>Profile photo</strong><small>JPG or PNG · At least 400 × 400 px</small><div className="settings-photo-actions"><button type="button" className="settings-button subtle" onClick={() => fileRef.current?.click()}><Icon name="camera" size={14} /> Upload photo</button><input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={uploadPhoto} />{photo && <button type="button" className="settings-text-button" onClick={() => { setPhoto(""); try { localStorage.removeItem("flowbase:settings-photo"); } catch {} }}>Remove</button>}</div></div>
+              <div className="settings-photo-copy"><strong>Profile photo</strong><small>JPG or PNG · At least 400 × 400 px</small><div className="settings-photo-actions"><button type="button" className="settings-button subtle" onClick={() => fileRef.current?.click()}><Icon name="camera" size={14} /> Upload photo</button><input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={uploadPhoto} />{photo && <button type="button" className="settings-text-button" onClick={() => { setPhoto(""); try { localStorage.removeItem("flowbase:settings-photo"); } catch {} window.dispatchEvent(new Event("flowbase:profile-photo-updated")); }}>Remove</button>}</div></div>
               <span className="settings-photo-mark"><Icon name="checkCircle" size={18} /></span>
             </div>
             <div className="settings-fields two-col">
