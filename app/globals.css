@@ -276,7 +276,7 @@ small { display: block; }
 
 .timeline { margin-top: 28px; position: relative; z-index: 1; display: flex; flex-direction: column; gap: 14px; }
 .timeline::before { content: ""; position: absolute; left: 63px; top: 8px; bottom: 8px; width: 1px; background: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.15)); }
-.timeline li { display: grid; grid-template-columns: 41px 14px minmax(0, 1fr); align-items: center; gap: 0 9px; position: relative; }
+.timeline li { display: grid; grid-template-columns: 41px 150px minmax(0, 1fr); align-items: center; gap: 0 15px; position: relative; }
 .timeline time { font-size: 11px; font-weight: 400; color: #e6e3f7; }
 .node { width: 8px; height: 8px; border-radius: 50%; justify-self: center; position: relative; z-index: 1; box-shadow: 0 0 10px currentColor; }
 
@@ -384,7 +384,7 @@ small { display: block; }
   .stat-icon { right: 14px; top: 14px; }
   .agenda, .priority { padding: 16px; }
   .timeline::before { left: 53px; }
-  .timeline li { grid-template-columns: 34px 14px minmax(0, 1fr); gap: 0 6px; }
+  .timeline li { grid-template-columns: 34px 150px minmax(0, 1fr); gap: 0 15px; }
   .agenda-row { flex-direction: column; align-items: flex-start; gap: 4px; }
   .activity { padding: 16px; }
   .activity-list li { grid-template-columns: 32px minmax(0, 1fr); margin-left: 0; }
