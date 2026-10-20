@@ -7,10 +7,9 @@ import Logo from "./Logo";
 import { NAV } from "@/lib/data";
 import { QUICK_FILTERS, UPGRADE_URL, LEARN_MORE_URL } from "@/lib/config";
 
-export default function Sidebar({ open, onClose }) {
+export default function Sidebar({ open, onClose, searchQuery, onSearchChange }) {
   const pathname = usePathname();
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [query, setQuery] = useState("");
   const isActive = (href) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   return (
@@ -21,8 +20,8 @@ export default function Sidebar({ open, onClose }) {
 
         <label className="search">
           <Icon name="search" size={18} />
-          <input type="search" placeholder="Search" value={query}
-            onChange={(e) => setQuery(e.target.value)} aria-label="Search" />
+          <input type="search" placeholder="Search anything in Flowbase" value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)} aria-label="Search anything in Flowbase" />
         </label>
 
         <nav className="nav primary">

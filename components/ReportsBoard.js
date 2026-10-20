@@ -161,7 +161,7 @@ export default function ReportsBoard() {
     }
     const record = { id: Date.now(), question, ...result, createdAt: new Date().toISOString() };
     setAnalysisResult(record);
-    setAnalysisHistory((current) => { const next = [record, ...current].slice(0, 50); try { localStorage.setItem("flowbase:analysis-history:v1", JSON.stringify(next)); } catch {} return next; });
+        setAnalysisHistory((current) => { const next = [record, ...current].slice(0, 50); try { localStorage.setItem("flowbase:analysis-history:v1", JSON.stringify(next)); } catch {} window.dispatchEvent(new Event("flowbase:report-history-updated")); return next; });
     setAnalysisQuestion("");
   };
   const exportAnalysis = (item) => {

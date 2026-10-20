@@ -52,6 +52,7 @@ export default function SettingsPage() {
   const save = (event) => {
     event.preventDefault();
     try { localStorage.setItem("flowbase:settings", JSON.stringify(form)); } catch {}
+    window.dispatchEvent(new Event("flowbase:settings-updated"));
     setSaved(true);
     setNotice("Your settings have been saved.");
     window.setTimeout(() => setNotice(""), 2800);
