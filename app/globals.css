@@ -325,7 +325,7 @@ small { display: block; }
 .activity .card-head small { font-size: 11px; margin-top: 4px; }
 .activity .head-link { font-size: 11px; }
 .activity-list { margin-top: 14px; position: relative; z-index: 1; }
-.activity-list li { padding: 0 4px 0 0; margin-left: 12px; }
+.activity-list li { margin-left: 12px; }
 .activity-list li + li { border-top: 1px solid rgba(255, 255, 255, 0.18); }
 .activity-row { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 14px 0; border-radius: 10px; transition: background 0.15s; }
 .activity-row:hover { background: rgba(255, 255, 255, 0.08); }
