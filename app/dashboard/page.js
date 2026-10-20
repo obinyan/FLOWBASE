@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Icon from "@/components/Icons";
-import { STATS, AGENDA, PRIORITY, ACTIVITY } from "@/lib/data";
+import { STATS, AGENDA, PRIORITY } from "@/lib/data";
+import DashboardActivity from "@/components/DashboardActivity";
 
 export default function Dashboard() {
   return (
@@ -46,12 +47,7 @@ export default function Dashboard() {
         </section>
       </div>
 
-      <section className="panel activity">
-        <div className="card-head"><div><h2>Recent Activity</h2><small>Latest updates across &nbsp;your leads</small></div><Link href="/activity" className="head-link">Activity log <Icon name="arrow" size={15} /></Link></div>
-        <ul className="activity-list">{ACTIVITY.map((a, i) => (
-          <li key={i}><Link href={i === 0 ? "/leads?filter=new" : i === 1 ? "/leads?status=qualified" : i === 2 ? "/leads?search=Glitz%20N%20Glam" : "/leads?search=Shopkyluxury"} className="activity-row" aria-label={`${a.title}: ${a.sub}`}><span className={`act-icon ${a.tone}`}><Icon name={a.icon} size={14} strokeWidth={2} /></span><div className="act-text"><b>{a.title}</b><small>{a.sub}</small></div><time>{a.time}</time></Link></li>
-        ))}{ACTIVITY.length === 0 && <li className="dashboard-empty"><span className="act-icon olive"><Icon name="clock" size={15} /></span><div><b>No recent activity</b><small>Your lead updates will appear here.</small></div></li>}</ul>
-      </section>
+      <DashboardActivity />
     </>
   );
 }
