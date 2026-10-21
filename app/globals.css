@@ -615,7 +615,7 @@ small { display: block; }
 .team-list-search button { display: grid; place-items: center; }
 .team-select { height: 42px; flex: 0 1 130px; min-width: 105px; display: flex; align-items: center; gap: 7px; padding: 0 11px; border: 1px solid rgba(157,143,242,.25); border-radius: 11px; background: rgba(42,33,112,.5); color: #e0dcf1; }
 .team-select select { width: 100%; appearance: none; border: 0; outline: 0; background: transparent; color: inherit; font-size: 10px; cursor: pointer; }
-.team-select option,.team-role-pill option,.team-status-pill option,.team-bulkbar option { color: #fff; background: #21175f; }
+.team-select option,.team-role-pill option,.team-status-pill option,.team-bulkbar option { color: #fff; background: #21175f; padding: 10px 14px; min-height: 36px; font-size: 12px; line-height: 1.5; }
 .team-selectall { height: 42px; flex: 1 1 120px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid rgba(157,143,242,.22); border-radius: 11px; background: rgba(42,33,112,.32); color: #c9c3e2; font-size: 10px; }
 .team-selectall input,.team-check-cell input { accent-color: #8c78ff; cursor: pointer; }
 .team-more-wrap { position: relative; }
@@ -730,12 +730,12 @@ small { display: block; }
 .reports-overview-top p { margin-top: 5px; color: #bcb7d9; font-size: 13px; }
 .reports-range-control { height: 42px; min-width: 200px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid rgba(157,143,242,.3); border-radius: 11px; background: rgba(42,33,112,.55); color: #dedaf0; }
 .reports-range-control select { width: 100%; appearance: none; border: 0; outline: 0; background: transparent; color: inherit; font-size: 10px; cursor: pointer; }
-.reports-range-control option { color: #fff; background: #21175f; }
+.reports-range-control option { color: #fff; background: #21175f; padding: 10px 14px; min-height: 36px; font-size: 12px; line-height: 1.5; }
 .reports-quick-filters { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
 .reports-quick-filters > span { margin-right: 3px; color: #b3add3; font-size: 9px; font-weight: 700; letter-spacing: .03em; }
 .reports-quick-filters > label,.reports-quick-filters .report-filter-wrap > button { height: 34px; min-width: 125px; display: flex; align-items: center; gap: 7px; padding: 0 11px; border: 1px solid rgba(157,143,242,.27); border-radius: 10px; background: rgba(42,33,112,.45); color: #ddd9f0; }
 .reports-quick-filters > label select { width: 100%; appearance: none; border: 0; outline: 0; background: transparent; color: inherit; font-size: 10px; cursor: pointer; }
-.reports-quick-filters option { background: #21175f; color: #fff; }
+.reports-quick-filters option { background: #21175f; color: #fff; padding: 10px 14px; min-height: 36px; font-size: 12px; line-height: 1.5; }
 .reports-quick-filters .report-filter-wrap > button { width: 100%; justify-content: space-between; font-size: 10px; }
 .reports-quick-filters .report-filter-wrap > button.active,.reports-quick-filters .report-filter-wrap > button:hover { border-color: rgba(187,170,255,.65); background: rgba(106,85,192,.35); }
 .report-clear-filters { padding: 8px; color: #c7bbff; font-size: 10px; }
@@ -759,7 +759,7 @@ small { display: block; }
 .report-panel-header p { margin-top: 5px; color: #bcb6d8; font-size: 9px; }
 .report-panel-header > label { height: 34px; min-width: 105px; display: flex; align-items: center; gap: 7px; padding: 0 10px; border: 1px solid rgba(157,143,242,.22); border-radius: 10px; background: rgba(42,33,112,.4); color: #d7d2ec; }
 .report-panel-header select { width: 100%; appearance: none; border: 0; outline: 0; background: transparent; color: inherit; font-size: 9px; cursor: pointer; }
-.report-panel-header option { color: #fff; background: #21175f; }
+.report-panel-header option { color: #fff; background: #21175f; padding: 10px 14px; min-height: 36px; font-size: 12px; line-height: 1.5; }
 .report-chart-wrap { padding-top: 12px; }
 .report-chart-legend { display: flex; align-items: center; gap: 23px; padding: 0 6px 8px; color: #c7c1e2; font-size: 8px; }
 .report-chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
@@ -872,7 +872,7 @@ small { display: block; }
 .tasks-list-search input::placeholder { color: #a7a1c2; opacity: 1; }
 .tasks-priority-select,.tasks-filter-wrap > button { height: 42px; min-width: 116px; display: flex; align-items: center; justify-content: space-between; gap: 7px; padding: 0 12px; border: 1px solid rgba(157,143,242,.3); border-radius: 11px; background: rgba(42,33,112,.55); color: #dedaf0; font-size: 10px; }
 .tasks-priority-select select { width: 100%; appearance: none; border: 0; outline: 0; background: transparent; color: inherit; font-size: 10px; cursor: pointer; }
-.tasks-priority-select option { color: #fff; background: #21175f; }
+.tasks-priority-select option { color: #fff; background: #21175f; padding: 10px 14px; min-height: 36px; font-size: 12px; line-height: 1.5; }
 .tasks-filter-wrap { position: relative; }
 .tasks-filter-wrap > button { justify-content: center; min-width: 120px; }
 .tasks-filter-wrap > button.active,.tasks-filter-wrap > button:hover { border-color: rgba(187,170,255,.65); background: rgba(106,85,192,.35); }
@@ -1149,7 +1149,7 @@ small { display: block; }
 .pipeline-filters label { height: 38px; min-width: 150px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid rgba(154,139,240,.38); border-radius: 12px; background: rgba(71,56,157,.35); color: #ddd9f3; }
 .pipeline-filters label:nth-child(2) { min-width: 125px; }
 .pipeline-filters select, .pipeline-sort select, .pipeline-quick-filter select { appearance: none; background: transparent; border: 0; outline: 0; color: #fff; font-size: 11px; cursor: pointer; }
-.pipeline-filters option, .pipeline-sort option, .pipeline-quick-filter option, .stage-select option { color: #fff; background: #21175f; padding: 6px 8px; font-size: 11px; }
+.pipeline-filters option, .pipeline-sort option, .pipeline-quick-filter option, .stage-select option { color: #fff; background: #21175f; padding: 10px 14px; min-height: 36px; font-size: 12px; line-height: 1.5; }
 .pipeline-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 .pipeline-stat { --stat-color: #9b82ff; position: relative; min-height: 88px; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto; column-gap: 8px; padding: 14px 16px 13px 21px; border: 1px solid rgba(157,143,242,.28); border-radius: 16px; background: rgba(35,27,100,.72); overflow: hidden; }
 .pipeline-stat::before { content: ""; position: absolute; left: 0; top: 15px; bottom: 15px; width: 5px; border-radius: 5px; background: var(--stat-color); }
@@ -1289,7 +1289,7 @@ small { display: block; }
 .leads-select-filter,.leads-sort-select { position: relative; height: 42px; display: flex; align-items: center; gap: 6px; padding: 0 12px; border: 1px solid rgba(157,143,242,.3); border-radius: 11px; background: rgba(42,33,112,.55); color: #dedaf0; }
 .leads-select-filter { flex: 0 1 130px; min-width: 100px; }
 .leads-select-filter select,.leads-sort-select select { width: 100%; min-width: 0; appearance: none; border: 0; outline: 0; background: transparent; color: inherit; font-size: 10px; cursor: pointer; }
-.leads-select-filter option,.leads-sort-select option,.lead-stage-pill option { color: #fff; background: #21175f; }
+.leads-select-filter option,.leads-sort-select option,.lead-stage-pill option { color: #fff; background: #21175f; padding: 10px 14px; min-height: 36px; font-size: 12px; line-height: 1.5; }
 .leads-sort-select { flex: 0 1 145px; min-width: 115px; margin-left: auto; }
 .leads-filter-wrap { position: relative; flex: none; }
 .leads-filter-button { height: 42px; display: flex; align-items: center; gap: 7px; padding: 0 13px; border: 1px solid rgba(157,143,242,.3); border-radius: 11px; background: rgba(42,33,112,.55); color: #dedaf0; font-size: 10px; }
@@ -1539,81 +1539,6 @@ small { display: block; }
     padding: 18px;
   }
 }
-/* Dropdown controls circled in the user's Leads, Pipeline, Tasks, and Reports screenshots. */
-.pipeline-filters label,
-.pipeline-sort,
-.pipeline-quick-filter,
-.leads-select-filter,
-.leads-sort-select,
-.tasks-priority-select,
-.reports-range-control,
-.reports-quick-filters > label,
-.reports-quick-filters .report-filter-wrap > button,
-.report-panel-header > label {
-  box-sizing: border-box;
-  min-height: 42px;
-  padding: 0 15px;
-  border: 1px solid rgba(190,179,255,.34);
-  border-radius: 12px;
-  background: linear-gradient(145deg, rgba(76,62,160,.52), rgba(48,37,123,.58));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
-  color: #e7e2fa;
-}
-.pipeline-filters label { min-width: 166px; gap: 10px; }
-.pipeline-filters label:nth-child(2) { min-width: 150px; }
-.pipeline-sort { width: 205px; gap: 10px; padding: 0 14px; border-left: 1px solid rgba(190,179,255,.34); }
-.pipeline-quick-filter { width: 150px; gap: 10px; padding: 0 14px; border-left: 1px solid rgba(190,179,255,.34); }
-.leads-select-filter { flex-basis: 162px; min-width: 150px; }
-.leads-sort-select { flex-basis: 178px; min-width: 160px; }
-.tasks-priority-select { min-width: 150px; }
-.reports-range-control { min-width: 235px; }
-.reports-quick-filters > label,
-.reports-quick-filters .report-filter-wrap > button { min-height: 42px; min-width: 150px; padding: 0 14px; border-radius: 12px; }
-.report-panel-header > label { min-height: 42px; min-width: 130px; padding: 0 14px; border-radius: 12px; }
-.pipeline-filters select,
-.pipeline-sort select,
-.pipeline-quick-filter select,
-.leads-select-filter select,
-.leads-sort-select select,
-.tasks-priority-select select,
-.reports-range-control select,
-.reports-quick-filters > label select,
-.report-panel-header select {
-  min-width: 0;
-  padding: 0 3px;
-  color: inherit;
-  font-size: 11px;
-}
-
-/* Shared dropdown spacing and width, matched to the Leads action menu reference. */
-.report-filter-popover,
-.tasks-filter-menu,
-.pipeline-popover {
-  box-sizing: border-box;
-  min-width: 184px;
-  max-width: min(260px, calc(100vw - 24px));
-  padding: 9px;
-  gap: 5px;
-  border: 1px solid rgba(204,193,255,.42);
-  border-radius: 14px;
-  background: linear-gradient(145deg, rgba(55,44,128,.96), rgba(32,25,97,.97));
-  box-shadow: 0 14px 34px rgba(4,2,28,.48), inset 0 1px 0 rgba(255,255,255,.14);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
-  backdrop-filter: blur(18px) saturate(150%);
-}
-.report-filter-popover button,
-.tasks-filter-menu label,
-.tasks-filter-menu > button,
-.pipeline-popover button,
-.pipeline-popover a {
-  box-sizing: border-box;
-  min-height: 40px;
-  padding: 10px 12px;
-  border-radius: 9px;
-  line-height: 1.35;
-}
-.tasks-filter-menu label { gap: 10px; }
-.tasks-filter-menu > button { border-top: 1px solid rgba(174,163,226,.18); }
 /* Roomier opened menus for the corresponding custom dropdowns. */
 .report-filter-popover,
 .tasks-filter-menu,
@@ -1644,3 +1569,4 @@ small { display: block; }
 .tasks-filter-menu label { gap: 10px; }
 .tasks-filter-menu > button { border-top: 1px solid rgba(174,163,226,.18); }
 .pipeline-popover > span { padding: 8px 12px; }
+
