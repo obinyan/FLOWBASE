@@ -1539,4 +1539,34 @@ small { display: block; }
     padding: 18px;
   }
 }
+/* Shared dropdown spacing and width, matched to the Leads action menu reference. */
+.report-filter-popover,
+.tasks-filter-menu,
+.pipeline-popover {
+  box-sizing: border-box;
+  min-width: 184px;
+  max-width: min(260px, calc(100vw - 24px));
+  padding: 9px;
+  gap: 5px;
+  border: 1px solid rgba(204,193,255,.42);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(55,44,128,.96), rgba(32,25,97,.97));
+  box-shadow: 0 14px 34px rgba(4,2,28,.48), inset 0 1px 0 rgba(255,255,255,.14);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+}
+.report-filter-popover button,
+.tasks-filter-menu label,
+.tasks-filter-menu > button,
+.pipeline-popover button,
+.pipeline-popover a {
+  box-sizing: border-box;
+  min-height: 40px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  line-height: 1.35;
+}
+.tasks-filter-menu label { gap: 10px; }
+.tasks-filter-menu > button { border-top: 1px solid rgba(174,163,226,.18); }
+.pipeline-popover > span { padding: 8px 12px; }
 
