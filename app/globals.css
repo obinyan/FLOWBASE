@@ -1539,6 +1539,52 @@ small { display: block; }
     padding: 18px;
   }
 }
+/* Dropdown controls circled in the user's Leads, Pipeline, Tasks, and Reports screenshots. */
+.pipeline-filters label,
+.pipeline-sort,
+.pipeline-quick-filter,
+.leads-select-filter,
+.leads-sort-select,
+.tasks-priority-select,
+.reports-range-control,
+.reports-quick-filters > label,
+.reports-quick-filters .report-filter-wrap > button,
+.report-panel-header > label {
+  box-sizing: border-box;
+  min-height: 42px;
+  padding: 0 15px;
+  border: 1px solid rgba(190,179,255,.34);
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(76,62,160,.52), rgba(48,37,123,.58));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
+  color: #e7e2fa;
+}
+.pipeline-filters label { min-width: 166px; gap: 10px; }
+.pipeline-filters label:nth-child(2) { min-width: 150px; }
+.pipeline-sort { width: 205px; gap: 10px; padding: 0 14px; border-left: 1px solid rgba(190,179,255,.34); }
+.pipeline-quick-filter { width: 150px; gap: 10px; padding: 0 14px; border-left: 1px solid rgba(190,179,255,.34); }
+.leads-select-filter { flex-basis: 162px; min-width: 150px; }
+.leads-sort-select { flex-basis: 178px; min-width: 160px; }
+.tasks-priority-select { min-width: 150px; }
+.reports-range-control { min-width: 235px; }
+.reports-quick-filters > label,
+.reports-quick-filters .report-filter-wrap > button { min-height: 42px; min-width: 150px; padding: 0 14px; border-radius: 12px; }
+.report-panel-header > label { min-height: 42px; min-width: 130px; padding: 0 14px; border-radius: 12px; }
+.pipeline-filters select,
+.pipeline-sort select,
+.pipeline-quick-filter select,
+.leads-select-filter select,
+.leads-sort-select select,
+.tasks-priority-select select,
+.reports-range-control select,
+.reports-quick-filters > label select,
+.report-panel-header select {
+  min-width: 0;
+  padding: 0 3px;
+  color: inherit;
+  font-size: 11px;
+}
+
 /* Shared dropdown spacing and width, matched to the Leads action menu reference. */
 .report-filter-popover,
 .tasks-filter-menu,
@@ -1568,5 +1614,33 @@ small { display: block; }
 }
 .tasks-filter-menu label { gap: 10px; }
 .tasks-filter-menu > button { border-top: 1px solid rgba(174,163,226,.18); }
+/* Roomier opened menus for the corresponding custom dropdowns. */
+.report-filter-popover,
+.tasks-filter-menu,
+.pipeline-popover {
+  box-sizing: border-box;
+  min-width: 184px;
+  max-width: min(260px, calc(100vw - 24px));
+  padding: 9px;
+  gap: 5px;
+  border: 1px solid rgba(204,193,255,.42);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(55,44,128,.96), rgba(32,25,97,.97));
+  box-shadow: 0 14px 34px rgba(4,2,28,.48), inset 0 1px 0 rgba(255,255,255,.14);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+}
+.report-filter-popover button,
+.tasks-filter-menu label,
+.tasks-filter-menu > button,
+.pipeline-popover button,
+.pipeline-popover a {
+  box-sizing: border-box;
+  min-height: 40px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  line-height: 1.35;
+}
+.tasks-filter-menu label { gap: 10px; }
+.tasks-filter-menu > button { border-top: 1px solid rgba(174,163,226,.18); }
 .pipeline-popover > span { padding: 8px 12px; }
-
