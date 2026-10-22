@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Icon from "@/components/Icons";
-import { STATS, AGENDA, PRIORITY } from "@/lib/data";
+import { AGENDA, PRIORITY } from "@/lib/data";
 import DashboardActivity from "@/components/DashboardActivity";
+import DashboardOverview from "@/components/DashboardOverview";
 
 export default function Dashboard() {
   return (
@@ -10,27 +11,11 @@ export default function Dashboard() {
         <p>Here’s what needs your attention today</p>
         <div className="attention-actions">
           <Link href="/calendar?view=follow-ups" className="btn-schedule">Schedule follow-ups</Link>
-          <Link href="/pipeline" className="btn-pipeline">View pipeline</Link>
+          <Link href="/workspace" className="btn-pipeline">View workspace</Link>
         </div>
       </section>
 
-      <section className="stats" aria-label="Summary">
-        {STATS.map((s) => (
-          <Link key={s.id} href={s.id === "total" ? "/leads" : s.id === "new" ? "/leads?filter=new" : s.id === "overdue" ? "/leads" : "/calendar?view=follow-ups"}
-            className={`panel stat stat-${s.id}`} aria-label={`${s.label}: ${s.value}. Open ${s.id === "total" || s.id === "new" || s.id === "overdue" ? "leads" : "follow-ups"}`}>
-            {s.id === "total" || s.id === "new" ? (
-              <>
-                <h2 className="stat-label">{s.label}</h2>
-                <div className="stat-value">{s.value}</div>
-                <div className="stat-note">{s.trend && <Icon name="trend" size={13} strokeWidth={2} />}{s.note}</div>
-                {s.icon && <span className="stat-icon"><Icon name={s.icon} size={22} /></span>}
-              </>
-            ) : (
-              <><h2 className="stat-label plain">{s.id === "overdue" ? "Priority leads" : s.label}</h2><div className="stat-row"><strong>{s.value}</strong><span>{s.note}</span></div></>
-            )}
-          </Link>
-        ))}
-      </section>
+      <DashboardOverview />
 
       <div className="mid">
         <section className="panel agenda">
