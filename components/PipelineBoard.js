@@ -40,7 +40,7 @@ export default function PipelineBoard() {
     return matchesQuery && matchesOwner && matchesFilter && matchesDue;
   }).sort((a, b) => sort === "Value: high to low" ? b.value - a.value : sort === "Name" ? a.name.localeCompare(b.name) : 0), [leads, query, owner, filter, sort]);
 
-  const moveLead = (leadId, stage) => { const updated = leads.map((lead) => lead.id === leadId ? { ...lead, stage } : lead); setLeads(updated); writeLeads(updated); setMenuLead(null); };
+  const moveLead = (leadId, stage) => { const updated = leads.map((lead) => lead.id === leadId ? { ...lead, stage, ...(stage === "Won" ? { recordType: "client" } : {}) } : lead); setLeads(updated); writeLeads(updated); setMenuLead(null); };
 
   return <div className="pipeline-page">
     <section className="pipeline-heading panel"><div><h1>Pipeline</h1><p>Manage and move your leads through every stage.</p></div><div className="pipeline-heading-actions"><label className="pipeline-search"><Icon name="search" size={16} /><input type="search" placeholder="Search leads" value={query} onChange={(event) => setQuery(event.target.value)} aria-label="Search leads" />{query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search"><Icon name="close" size={14} /></button>}</label><button className="pipeline-add" type="button" onClick={() => window.dispatchEvent(new Event(ADD_LEAD_EVENT))}><Icon name="plus" size={16} />Add lead</button></div></section>

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Icon from "./Icons";
 import Logo from "./Logo";
 import { NAV } from "@/lib/data";
@@ -10,7 +10,9 @@ import { QUICK_FILTERS, UPGRADE_URL, LEARN_MORE_URL } from "@/lib/config";
 export default function Sidebar({ open, onClose, searchQuery, onSearchChange }) {
   const pathname = usePathname();
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [tasksOpen, setTasksOpen] = useState(false);
   const isActive = (href) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  useEffect(() => { if (pathname.startsWith("/tasks") || pathname.startsWith("/calendar")) setTasksOpen(true); }, [pathname]);
 
   return (
     <>
@@ -25,7 +27,7 @@ export default function Sidebar({ open, onClose, searchQuery, onSearchChange }) 
         </label>
 
         <nav className="nav primary">
-          {NAV.map((item) => (
+          {NAV.filter((item) => !["Tasks", "Reports"].includes(item.label)).map((item) => (
             <Link key={item.href} href={item.href} onClick={onClose}
               className={`nav-item ${isActive(item.href) ? "active" : ""}`}
               aria-current={isActive(item.href) ? "page" : undefined}>
@@ -33,6 +35,16 @@ export default function Sidebar({ open, onClose, searchQuery, onSearchChange }) 
               <span>{item.label}</span>
             </Link>
           ))}
+          <div className={`nav-group ${pathname.startsWith("/tasks") || pathname.startsWith("/calendar") ? "active-group" : ""}`}>
+            <div className="nav-group-row">
+              <Link href="/tasks" onClick={onClose} className={`nav-item ${pathname.startsWith("/tasks") ? "active" : ""}`} aria-current={pathname.startsWith("/tasks") ? "page" : undefined}>
+                <Icon name="tasks" size={28} /><span>Tasks</span>
+              </Link>
+              <button type="button" className="nav-group-toggle" aria-label={tasksOpen ? "Hide task views" : "Show task views"} aria-expanded={tasksOpen} onClick={() => setTasksOpen((value) => !value)}><Icon name="chevron" size={15} className={tasksOpen ? "up" : ""} /></button>
+            </div>
+            {tasksOpen && <div className="nav-submenu"><Link href="/calendar" onClick={onClose} className={`nav-subitem ${pathname.startsWith("/calendar") ? "active" : ""}`}><Icon name="calendar" size={17} /><span>Calendar</span></Link></div>}
+          </div>
+          {NAV.filter((item) => item.label === "Reports").map((item) => <Link key={item.href} href={item.href} onClick={onClose} className={`nav-item ${isActive(item.href) ? "active" : ""}`} aria-current={isActive(item.href) ? "page" : undefined}><Icon name={item.icon} size={28} /><span>{item.label}</span></Link>)}
         </nav>
 
         <hr className="divider" />

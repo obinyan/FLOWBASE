@@ -14,7 +14,7 @@ const SEARCH_EVENTS = [
 function resultIcon(result) {
   if (result.section === "How to") return "settings";
   if (result.section === "Page") {
-    return ({ Dashboard: "dashboard", Pipeline: "pipeline", Leads: "leads", Calendar: "calendar", Tasks: "tasks", Reports: "report", Inbox: "mail", Team: "leads", Settings: "settings" })[result.title] || "search";
+    return ({ Dashboard: "dashboard", Workspace: "pipeline", Pipeline: "pipeline", Leads: "leads", Clients: "leads", Payments: "report", Calendar: "calendar", Tasks: "tasks", Reports: "report", Inbox: "mail", Team: "leads", Settings: "settings" })[result.title] || "search";
   }
   return ({ Task: "tasks", Calendar: "calendar", Message: "mail", Notification: "bell", "Profile & settings": "user", Report: "report", Team: "leads", Lead: "leads" })[result.section] || "search";
 }

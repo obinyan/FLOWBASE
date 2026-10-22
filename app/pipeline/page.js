@@ -1,7 +1,7 @@
-import PipelineBoard from "@/components/PipelineBoard";
+import { redirect } from "next/navigation";
 
 export const metadata = { title: "Pipeline – Flowbase" };
 
 export default function PipelinePage() {
-  return <PipelineBoard />;
+  redirect("/workspace?tab=pipeline");
 }
