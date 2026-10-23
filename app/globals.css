@@ -1541,6 +1541,9 @@ small { display: block; }
 .nav-group { position:relative; }
 .nav-group-row { display:flex; align-items:center; }
 .nav-group-row > .nav-item { flex:1; min-width:0; }
+.workspace-nav-toggle { width:100%; border:1px solid transparent; background:transparent; color:inherit; text-align:left; font:inherit; cursor:pointer; }
+.workspace-nav-chevron { margin-left:auto; opacity:.8; transition:transform .16s ease; }
+.workspace-nav-chevron.up { transform:rotate(180deg); }
 .nav-group-toggle { width:31px; height:38px; flex:none; display:grid; place-items:center; margin-right:8px; border-radius:9px; color:#bcb5dc; }
 .nav-group-toggle:hover { background:rgba(255,255,255,.08); color:#fff; }
 .nav-group-toggle svg { transition:transform .16s ease; }

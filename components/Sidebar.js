@@ -20,6 +20,16 @@ export default function Sidebar({ open, onClose, searchQuery, onSearchChange }) 
   useEffect(() => {
     const syncWorkspaceSection = () => setWorkspaceSection(pathname.startsWith("/workspace") ? new URLSearchParams(window.location.search).get("tab") || "" : "");
     const onWorkspaceSectionChange = (event) => setWorkspaceSection(event.detail || "");
+    const syncWorkspaceSection = () => {
+      const section = pathname.startsWith("/workspace") ? new URLSearchParams(window.location.search).get("tab") || "" : "";
+      setWorkspaceSection(section);
+      if (pathname.startsWith("/workspace")) setWorkspaceOpen(section !== "pipeline");
+    };
+    const onWorkspaceSectionChange = (event) => {
+      const section = event.detail || "";
+      setWorkspaceSection(section);
+      setWorkspaceOpen(section !== "pipeline");
+    };
     syncWorkspaceSection();
     if (pathname.startsWith("/workspace")) setWorkspaceOpen(true);
     window.addEventListener("popstate", syncWorkspaceSection);
@@ -57,14 +67,21 @@ export default function Sidebar({ open, onClose, searchQuery, onSearchChange }) 
                 <Icon name="pipeline" size={28} /><span>Workspace</span>
               </Link>
               <button type="button" className="nav-group-toggle" aria-label={workspaceOpen ? "Hide workspace sections" : "Show workspace sections"} aria-expanded={workspaceOpen} aria-controls="workspace-submenu" onClick={() => setWorkspaceOpen((value) => !value)}><Icon name="chevron" size={15} className={workspaceOpen ? "up" : ""} /></button>
+              <button type="button" className={`nav-item workspace-nav-toggle ${workspaceActive ? "active" : ""}`} aria-expanded={workspaceOpen} aria-controls="workspace-submenu" onClick={() => setWorkspaceOpen((value) => !value)}>
+                <Icon name="pipeline" size={28} /><span>Workspace</span><Icon name="chevron" size={15} className={`workspace-nav-chevron ${workspaceOpen ? "up" : ""}`} />
+              </button>
             </div>
             {workspaceOpen && <div className="nav-submenu" id="workspace-submenu">
               <Link href="/workspace?tab=leads" onClick={() => { setWorkspaceSection("leads"); onClose(); }} className={`nav-subitem ${pathname.startsWith("/workspace") && workspaceSection === "leads" ? "active" : ""}`}><Icon name="leads" size={17}/><span>Leads</span></Link>
               <Link href="/workspace?tab=clients" onClick={() => { setWorkspaceSection("clients"); onClose(); }} className={`nav-subitem ${pathname.startsWith("/workspace") && workspaceSection === "clients" ? "active" : ""}`}><Icon name="briefcase" size={17}/><span>Clients</span></Link>
               <Link href="/workspace?tab=payments" onClick={() => { setWorkspaceSection("payments"); onClose(); }} className={`nav-subitem ${pathname.startsWith("/workspace") && workspaceSection === "payments" ? "active" : ""}`}><Icon name="report" size={17}/><span>Payments</span></Link>
+              <Link href="/workspace?tab=leads" onClick={() => { setWorkspaceSection("leads"); setWorkspaceOpen(true); onClose(); }} className={`nav-subitem ${pathname.startsWith("/workspace") && workspaceSection === "leads" ? "active" : ""}`}><Icon name="leads" size={17}/><span>Leads</span></Link>
+              <Link href="/workspace?tab=clients" onClick={() => { setWorkspaceSection("clients"); setWorkspaceOpen(true); onClose(); }} className={`nav-subitem ${pathname.startsWith("/workspace") && workspaceSection === "clients" ? "active" : ""}`}><Icon name="briefcase" size={17}/><span>Clients</span></Link>
+              <Link href="/workspace?tab=payments" onClick={() => { setWorkspaceSection("payments"); setWorkspaceOpen(true); onClose(); }} className={`nav-subitem ${pathname.startsWith("/workspace") && workspaceSection === "payments" ? "active" : ""}`}><Icon name="report" size={17}/><span>Payments</span></Link>
             </div>}
           </div>
           <Link href="/workspace?tab=pipeline" onClick={() => { setWorkspaceSection("pipeline"); onClose(); }} className={`nav-item ${pipelineActive ? "active" : ""}`} aria-current={pipelineActive ? "page" : undefined}>
+          <Link href="/workspace?tab=pipeline" onClick={() => { setWorkspaceSection("pipeline"); setWorkspaceOpen(false); onClose(); }} className={`nav-item ${pipelineActive ? "active" : ""}`} aria-current={pipelineActive ? "page" : undefined}>
             <Icon name="pipeline" size={28}/><span>Pipeline</span>
           </Link>
           <div className={`nav-group ${pathname.startsWith("/tasks") || pathname.startsWith("/calendar") ? "active-group" : ""}`}>
