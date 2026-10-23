@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Icon from "./Icons";
 import Logo from "./Logo";
@@ -9,10 +9,16 @@ import { QUICK_FILTERS, UPGRADE_URL, LEARN_MORE_URL } from "@/lib/config";
 
 export default function Sidebar({ open, onClose, searchQuery, onSearchChange }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [tasksOpen, setTasksOpen] = useState(false);
+  const [workspaceOpen, setWorkspaceOpen] = useState(false);
   const isActive = (href) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const workspaceSection = searchParams.get("tab");
+  const workspaceActive = pathname.startsWith("/workspace") && (!workspaceSection || ["leads", "clients", "payments"].includes(workspaceSection));
+  const pipelineActive = pathname.startsWith("/workspace") && workspaceSection === "pipeline";
   useEffect(() => { if (pathname.startsWith("/tasks") || pathname.startsWith("/calendar")) setTasksOpen(true); }, [pathname]);
+  useEffect(() => { if (pathname.startsWith("/workspace")) setWorkspaceOpen(true); }, [pathname]);
 
   return (
     <>
@@ -27,7 +33,7 @@ export default function Sidebar({ open, onClose, searchQuery, onSearchChange }) 
         </label>
 
         <nav className="nav primary">
-          {NAV.filter((item) => !["Tasks", "Reports"].includes(item.label)).map((item) => (
+          {NAV.filter((item) => !["Workspace", "Tasks", "Reports"].includes(item.label)).map((item) => (
             <Link key={item.href} href={item.href} onClick={onClose}
               className={`nav-item ${isActive(item.href) ? "active" : ""}`}
               aria-current={isActive(item.href) ? "page" : undefined}>
@@ -35,6 +41,22 @@ export default function Sidebar({ open, onClose, searchQuery, onSearchChange }) 
               <span>{item.label}</span>
             </Link>
           ))}
+          <div className={`nav-group ${pathname.startsWith("/workspace") ? "active-group" : ""}`}>
+            <div className="nav-group-row">
+              <Link href="/workspace" onClick={onClose} className={`nav-item ${workspaceActive ? "active" : ""}`} aria-current={workspaceActive && !workspaceSection ? "page" : undefined}>
+                <Icon name="pipeline" size={28} /><span>Workspace</span>
+              </Link>
+              <button type="button" className="nav-group-toggle" aria-label={workspaceOpen ? "Hide workspace sections" : "Show workspace sections"} aria-expanded={workspaceOpen} aria-controls="workspace-submenu" onClick={() => setWorkspaceOpen((value) => !value)}><Icon name="chevron" size={15} className={workspaceOpen ? "up" : ""} /></button>
+            </div>
+            {workspaceOpen && <div className="nav-submenu" id="workspace-submenu">
+              <Link href="/workspace?tab=leads" onClick={onClose} className={`nav-subitem ${pathname.startsWith("/workspace") && searchParams.get("tab") === "leads" ? "active" : ""}`}><Icon name="leads" size={17}/><span>Leads</span></Link>
+              <Link href="/workspace?tab=clients" onClick={onClose} className={`nav-subitem ${pathname.startsWith("/workspace") && searchParams.get("tab") === "clients" ? "active" : ""}`}><Icon name="briefcase" size={17}/><span>Clients</span></Link>
+              <Link href="/workspace?tab=payments" onClick={onClose} className={`nav-subitem ${pathname.startsWith("/workspace") && searchParams.get("tab") === "payments" ? "active" : ""}`}><Icon name="report" size={17}/><span>Payments</span></Link>
+            </div>}
+          </div>
+          <Link href="/workspace?tab=pipeline" onClick={onClose} className={`nav-item ${pipelineActive ? "active" : ""}`} aria-current={pipelineActive ? "page" : undefined}>
+            <Icon name="pipeline" size={28}/><span>Pipeline</span>
+          </Link>
           <div className={`nav-group ${pathname.startsWith("/tasks") || pathname.startsWith("/calendar") ? "active-group" : ""}`}>
             <div className="nav-group-row">
               <Link href="/tasks" onClick={onClose} className={`nav-item ${pathname.startsWith("/tasks") ? "active" : ""}`} aria-current={pathname.startsWith("/tasks") ? "page" : undefined}>
