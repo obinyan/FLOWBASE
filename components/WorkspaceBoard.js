@@ -43,13 +43,11 @@ export default function WorkspaceBoard() {
     window.addEventListener(TASKS_EVENT, refresh);
     window.addEventListener("flowbase:payments-updated", refresh);
     window.addEventListener("flowbase:client-activity-updated", refresh);
-    window.addEventListener("flowbase:client-activity-updated", refresh);
     window.addEventListener("storage", refresh);
     return () => {
       window.removeEventListener(LEADS_EVENT, refresh);
       window.removeEventListener(TASKS_EVENT, refresh);
       window.removeEventListener("flowbase:payments-updated", refresh);
-      window.removeEventListener("flowbase:client-activity-updated", refresh);
       window.removeEventListener("flowbase:client-activity-updated", refresh);
       window.removeEventListener("storage", refresh);
     };
@@ -61,6 +59,7 @@ export default function WorkspaceBoard() {
     setTab(value);
     const query = value === "Overview" ? "" : `?tab=${value.toLowerCase()}`;
     window.history.replaceState({}, "", `/workspace${query}`);
+    window.dispatchEvent(new CustomEvent("flowbase:workspace-section-changed", { detail: value === "Overview" ? "" : value.toLowerCase() }));
     setSelectedClient(null);
   };
   const addClient = (event) => {

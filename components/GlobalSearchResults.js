@@ -40,7 +40,7 @@ export default function GlobalSearchResults({ query, onSelect }) {
       {results.length ? <ul>
         {results.map((result, index) => (
           <li key={`${result.section}-${result.title}-${index}`}>
-            <Link href={result.href} onClick={onSelect}>
+            <Link href={result.href} onClick={() => onSelect?.(result.href)}>
               <span className="global-search-icon"><Icon name={resultIcon(result)} size={16} /></span>
               <span className="global-search-copy"><b>{result.title}</b><small>{result.section} · {result.detail}</small></span>
               <Icon name="arrow" size={14} />

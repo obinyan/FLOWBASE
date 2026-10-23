@@ -51,7 +51,14 @@ export default function AppShell({ children }) {
             </label>}
           </div>
         </div>
-        <GlobalSearchResults query={query} onSelect={() => { setQuery(""); setSearchOpen(false); }} />
+        <GlobalSearchResults query={query} onSelect={(href) => {
+          if (href?.startsWith("/workspace")) {
+            const section = new URL(href, window.location.origin).searchParams.get("tab") || "";
+            window.dispatchEvent(new CustomEvent("flowbase:workspace-section-changed", { detail: section }));
+          }
+          setQuery("");
+          setSearchOpen(false);
+        }} />
         <Header />
         {children}
         <AddLeadModal />
