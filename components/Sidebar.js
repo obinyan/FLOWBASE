@@ -80,7 +80,6 @@ export default function Sidebar({ open, onClose, searchQuery, onSearchChange }) 
               <Link href="/workspace?tab=payments" onClick={() => { setWorkspaceSection("payments"); setWorkspaceOpen(true); onClose(); }} className={`nav-subitem ${pathname.startsWith("/workspace") && workspaceSection === "payments" ? "active" : ""}`}><Icon name="report" size={17}/><span>Payments</span></Link>
             </div>}
           </div>
-          <Link href="/workspace?tab=pipeline" onClick={() => { setWorkspaceSection("pipeline"); onClose(); }} className={`nav-item ${pipelineActive ? "active" : ""}`} aria-current={pipelineActive ? "page" : undefined}>
           <Link href="/workspace?tab=pipeline" onClick={() => { setWorkspaceSection("pipeline"); setWorkspaceOpen(false); onClose(); }} className={`nav-item ${pipelineActive ? "active" : ""}`} aria-current={pipelineActive ? "page" : undefined}>
             <Icon name="pipeline" size={28}/><span>Pipeline</span>
           </Link>
