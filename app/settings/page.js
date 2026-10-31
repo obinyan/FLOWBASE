@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { saveProfileFromSettings } from "@/lib/profile";
 import Icon from "@/components/Icons";
 
 const SECTIONS = [
@@ -53,6 +54,7 @@ export default function SettingsPage() {
     event.preventDefault();
     try { localStorage.setItem("flowbase:settings", JSON.stringify(form)); } catch {}
     window.dispatchEvent(new Event("flowbase:settings-updated"));
+    saveProfileFromSettings(form);
     setSaved(true);
     setNotice("Your settings have been saved.");
     window.setTimeout(() => setNotice(""), 2800);
