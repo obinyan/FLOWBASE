@@ -42,11 +42,11 @@ export default function DashboardOverview() {
 
   const clients = useMemo(() => leads.filter(isClient), [leads]);
   const prospects = useMemo(() => leads.filter((record) => !isClient(record)), [leads]);
-  const clientTasks = useMemo(() => tasks.filter((task) => !task.completed && clients.some((client) => Number(task.clientId) === Number(client.id) || task.lead === client.name)), [tasks, clients]);
+  const clientTasks = useMemo(() => tasks.filter((task) => !task.completed && clients.some((client) => String(task.clientId) === String(client.id) || task.lead === client.name)), [tasks, clients]);
   const dueFollowUps = prospects.filter((lead) => lead.followUpDate && lead.followUpDate <= localDateKey()).length;
   const paidTotal = payments.filter((payment) => payment.status === "Paid").reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
   const recentActivity = activity
-    .filter((item) => clients.some((client) => Number(client.id) === Number(item.clientId)))
+    .filter((item) => clients.some((client) => String(client.id) === String(item.clientId)))
     .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
     .slice(0, 4);
 
@@ -80,7 +80,7 @@ export default function DashboardOverview() {
         <div className="dashboard-workspace-activity">
           <h3>Recent client activity</h3>
           {recentActivity.length ? recentActivity.map((item) => {
-            const client = clients.find((record) => Number(record.id) === Number(item.clientId));
+            const client = clients.find((record) => String(record.id) === String(item.clientId));
             return <Link href="/workspace?tab=clients" className="dashboard-client-activity" key={item.id}>
               <span className="act-icon teal"><Icon name={item.type === "payment" ? "report" : "briefcase"} size={14}/></span>
               <span><b>{item.title}</b><small>{client?.name || "Client"} · {item.note}</small></span>

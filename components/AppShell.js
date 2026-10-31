@@ -7,6 +7,7 @@ import Logo from "./Logo";
 import Icon from "./Icons";
 import AddLeadModal from "./AddLeadModal";
 import GlobalSearchResults from "./GlobalSearchResults";
+import { startSync } from "@/lib/sync";
 
 export default function AppShell({ children }) {
   const [open, setOpen] = useState(false);
@@ -14,6 +15,7 @@ export default function AppShell({ children }) {
   const [query, setQuery] = useState("");
   const searchRef = useRef(null);
   const pathname = usePathname();
+  useEffect(() => { startSync(); }, []);
   useEffect(() => { setOpen(false); setQuery(""); setSearchOpen(false); }, [pathname]);
   useEffect(() => {
     if (searchOpen) searchRef.current?.focus();

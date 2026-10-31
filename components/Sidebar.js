@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Icon from "./Icons";
 import Logo from "./Logo";
+import { signOutAndClear } from "@/lib/session";
 import { NAV } from "@/lib/data";
 import { QUICK_FILTERS, UPGRADE_URL, LEARN_MORE_URL } from "@/lib/config";
 
@@ -155,6 +156,9 @@ export default function Sidebar({ open, onClose, searchQuery, onSearchChange }) 
           <Link href="/settings" onClick={onClose} className={`nav-item small ${isActive("/settings") ? "active" : ""}`}>
             <Icon name="settings" size={26} /><span>Settings</span>
           </Link>
+          <button type="button" className="nav-item small nav-logout" onClick={signOutAndClear}>
+            <Icon name="lock" size={26} /><span>Log out</span>
+          </button>
         </nav>
 
         <div className="hub-card">

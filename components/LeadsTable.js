@@ -35,7 +35,7 @@ export default function LeadsTable({ initialQuery = "", initialPriority = false 
     return (!term || `${lead.name} ${lead.contact} ${lead.email || ""} ${lead.source} ${lead.owner}`.toLowerCase().includes(term))
       && (stage === "All stages" || lead.stage === stage) && (source === "Source" || lead.source === source)
       && (owner === "Owner" || lead.owner === owner) && (!priorityOnly || lead.priority);
-  }).sort((a, b) => sort === "Highest value" ? Number(b.value || 0) - Number(a.value || 0) : sort === "Name A–Z" ? a.name.localeCompare(b.name) : sort === "Stage" ? STAGES.indexOf(a.stage) - STAGES.indexOf(b.stage) : Number(b.id) - Number(a.id)), [activeLeads, query, stage, source, owner, sort, priorityOnly]);
+  }).sort((a, b) => sort === "Highest value" ? Number(b.value || 0) - Number(a.value || 0) : sort === "Name A–Z" ? a.name.localeCompare(b.name) : sort === "Stage" ? STAGES.indexOf(a.stage) - STAGES.indexOf(b.stage) : String(b.createdAt || "").localeCompare(String(a.createdAt || ""))), [activeLeads, query, stage, source, owner, sort, priorityOnly]);
 
   const pages = Math.max(1, Math.ceil(filtered.length / 8));
   const currentPage = Math.min(page, pages);

@@ -1669,3 +1669,8 @@ small { display: block; }
 @media(max-width:850px) { .dashboard-workspace-content { grid-template-columns:1fr; gap:14px; } }
 @media(max-width:600px) { .dashboard-summary-stats { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }.dashboard-summary-stats .stat { padding:14px 12px; }.dashboard-summary-stats .stat-row { gap:7px; margin-top:15px; white-space:normal; }.dashboard-summary-stats .stat-row span { font-size:10px; }.dashboard-workspace-snapshot { padding:15px; }.dashboard-client-activity { grid-template-columns:28px minmax(0,1fr); }.dashboard-client-activity time { display:none; }.dashboard-workspace-empty { align-items:flex-start; flex-wrap:wrap; }.dashboard-workspace-empty > span { flex-basis:calc(100% - 32px); } }
 
+/* Supabase auth messages + log out button */
+.auth-error { margin: 0; padding: 10px 12px; border-radius: 10px; font-size: 13px; color: #ffb4a8; background: rgba(210, 99, 76, 0.14); border: 1px solid rgba(210, 99, 76, 0.4); }
+.auth-notice { margin: 0; padding: 10px 12px; border-radius: 10px; font-size: 13px; color: #9fe6c8; background: rgba(83, 213, 170, 0.12); border: 1px solid rgba(83, 213, 170, 0.35); }
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+.nav-logout { width: 100%; background: none; color: inherit; font-family: inherit; text-align: left; cursor: pointer; }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 function Brand({ className = "" }) {
   return <Link href="/" className={`auth-brand ${className}`} aria-label="Flowbase"><span>FLOWBASE</span></Link>;
@@ -21,9 +22,50 @@ function AuthForm({ mode }) {
   const [showPassword, setShowPassword] = useState(false);
   const isSignup = mode === "signup";
 
-  function submit(event) {
+  const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function submit(event) {
     event.preventDefault();
-    router.push("/dashboard");
+    setError(""); setNotice(""); setBusy(true);
+    const form = new FormData(event.currentTarget);
+    const email = String(form.get("email") || "").trim();
+    const password = String(form.get("password") || "");
+    const supabase = createClient();
+    try {
+      if (isSignup) {
+        const [firstName, ...rest] = String(form.get("name") || "").trim().split(/\s+/);
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email, password,
+          options: {
+            data: { first_name: firstName || "", last_name: rest.join(" ") },
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+          },
+        });
+        if (signUpError) throw signUpError;
+        if (!data.session) { setNotice("Check your email to confirm your account, then log in."); return; }
+      } else {
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) throw signInError;
+      }
+      router.push("/dashboard");
+      router.refresh();
+    } catch (err) {
+      setError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function continueWithGoogle() {
+    setError("");
+    const supabase = createClient();
+    const { error: oauthError } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
+    });
+    if (oauthError) setError(oauthError.message);
   }
 
   return isSignup ? (
@@ -40,13 +82,13 @@ function AuthForm({ mode }) {
       <section className="signup-form-wrap">
         <div className="signup-heading"><h2>Create your Account</h2><p>Get your pipeline moving with Flowbase</p></div>
         <form className="signup-form" onSubmit={submit}>
-          <button className="google-button" type="button" onClick={() => router.push("/dashboard")}><GoogleMark /><span>Sign up with Google</span></button>
+          <button className="google-button" type="button" onClick={continueWithGoogle}><GoogleMark /><span>Sign up with Google</span></button>
           <div className="auth-or"><span />or<span /></div>
           <label className="signup-field">Full name<input type="text" name="name" placeholder="Your name" autoComplete="name" /></label>
           <label className="signup-field">Work email<input type="email" name="email" placeholder="you@company.com" autoComplete="email" /></label>
           <label className="signup-field">Password<span className="password-input"><input type={showPassword ? "text" : "password"} name="password" placeholder="Create a password" autoComplete="new-password" /><button type="button" aria-label={showPassword ? "Hide password" : "Show password"} onClick={() => setShowPassword((value) => !value)}><Eye hidden={!showPassword} /></button></span></label>
           <small className="password-hint">Must be at least 8 characters</small>
-          <button className="signup-submit" type="submit">Create account</button>
+          {error && <p className="auth-error" role="alert">{error}</p>}{notice && <p className="auth-notice" role="status">{notice}</p>}<button className="signup-submit" type="submit" disabled={busy}>{busy ? "Creating account…" : "Create account"}</button>
         </form>
         <p className="auth-switch">Already have an account? <Link href="/">Log In</Link></p>
       </section>
@@ -67,8 +109,8 @@ function AuthForm({ mode }) {
           </div>
           <div className="signin-options"><label><input type="checkbox" name="remember" />Remember me</label><button type="button" onClick={() => window.alert("Password recovery will be available in a future version.")}>Forgot?</button></div>
           <div className="auth-or"><span />or<span /></div>
-          <button className="google-button" type="button" onClick={() => router.push("/dashboard")}><GoogleMark /><span>Continue with Google</span></button>
-          <button className="signin-submit" type="submit">SIGN IN</button>
+          <button className="google-button" type="button" onClick={continueWithGoogle}><GoogleMark /><span>Continue with Google</span></button>
+          {error && <p className="auth-error" role="alert">{error}</p>}{notice && <p className="auth-notice" role="status">{notice}</p>}<button className="signin-submit" type="submit" disabled={busy}>{busy ? "SIGNING IN…" : "SIGN IN"}</button>
         </form>
       </section>
     </main>
