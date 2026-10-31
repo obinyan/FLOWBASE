@@ -9,7 +9,7 @@ import { readInbox as readInboxData } from "@/lib/inbox";
 const greetingForHour = (hour) => hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
 export default function Header() {
-  const [profileName, setProfileName] = useState("John");
+  const [profileName, setProfileName] = useState("");
   const [period, setPeriod] = useState("Good morning");
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
@@ -20,8 +20,8 @@ export default function Header() {
     const updateProfile = () => {
       try {
         const settings = JSON.parse(localStorage.getItem("flowbase:settings") || "{}");
-        setProfileName(settings.firstName?.trim() || "John");
-      } catch { setProfileName("John"); }
+        setProfileName(settings.firstName?.trim() || "");
+      } catch { setProfileName(""); }
     };
     const updateAvatar = () => {
       try { setAvatarSrc(localStorage.getItem("flowbase:settings-photo") || AVATAR_SRC); }
@@ -49,7 +49,7 @@ export default function Header() {
   }, []);
 
   return <header className="panel topbar">
-    <h1 className="greeting" aria-live="polite">{`${period} ${profileName}`}</h1>
+    <h1 className="greeting" aria-live="polite">{profileName ? `${period} ${profileName}` : period}</h1>
     <div className="top-actions">
       {unreadMessages > 0 && <Link href="/inbox?view=messages" className="icon-btn" aria-label={`Messages, ${unreadMessages} unread`}><Icon name="mail" size={26} /><i className="dot" aria-hidden="true" /></Link>}
       {unreadNotifications > 0 && <Link href="/inbox?view=notifications" className="icon-btn" aria-label={`Notifications, ${unreadNotifications} unread`}><Icon name="bell" size={26} /><i className="dot" aria-hidden="true" /></Link>}
