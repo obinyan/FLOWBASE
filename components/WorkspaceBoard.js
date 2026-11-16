@@ -35,16 +35,29 @@ export default function WorkspaceBoard() {
     setActivity(readStored(ACTIVITY_KEY));
   };
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const selected = tabs.find((item) => item.toLowerCase() === params.get("tab"));
-    if (selected) setTab(selected);
+    const applySection = (section) => {
+      const selected = tabs.find((item) => item.toLowerCase() === section);
+      setTab(selected || "Overview");
+      if (!selected || selected === "Overview") setSelectedClient(null);
+    };
+    const syncSectionFromUrl = () => applySection(new URLSearchParams(window.location.search).get("tab") || "");
+    const onWorkspaceSectionChange = (event) => {
+      const section = event.detail || "";
+      applySection(section);
+      if (!section) refresh();
+    };
+    syncSectionFromUrl();
     refresh();
+    window.addEventListener("popstate", syncSectionFromUrl);
+    window.addEventListener("flowbase:workspace-section-changed", onWorkspaceSectionChange);
     window.addEventListener(LEADS_EVENT, refresh);
     window.addEventListener(TASKS_EVENT, refresh);
     window.addEventListener("flowbase:payments-updated", refresh);
     window.addEventListener("flowbase:client-activity-updated", refresh);
     window.addEventListener("storage", refresh);
     return () => {
+      window.removeEventListener("popstate", syncSectionFromUrl);
+      window.removeEventListener("flowbase:workspace-section-changed", onWorkspaceSectionChange);
       window.removeEventListener(LEADS_EVENT, refresh);
       window.removeEventListener(TASKS_EVENT, refresh);
       window.removeEventListener("flowbase:payments-updated", refresh);

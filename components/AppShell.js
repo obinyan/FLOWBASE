@@ -20,8 +20,20 @@ export default function AppShell({ children }) {
   const router = useRouter();
   const [moreOpen, setMoreOpen] = useState(false);
   const [historyState, setHistoryState] = useState({ back: false, forward: false });
+  const [workspaceSection, setWorkspaceSection] = useState("");
   useEffect(() => { startSync(); }, []);
   useEffect(() => { setOpen(false); setQuery(""); setSearchOpen(false); }, [pathname]);
+  useEffect(() => {
+    const sync = () => setWorkspaceSection(pathname.startsWith("/workspace") ? new URLSearchParams(window.location.search).get("tab") || "" : "");
+    const onSectionChange = (event) => setWorkspaceSection(event.detail || "");
+    sync();
+    window.addEventListener("popstate", sync);
+    window.addEventListener("flowbase:workspace-section-changed", onSectionChange);
+    return () => {
+      window.removeEventListener("popstate", sync);
+      window.removeEventListener("flowbase:workspace-section-changed", onSectionChange);
+    };
+  }, [pathname]);
   useEffect(() => {
     const update = () => setHistoryState({ back: window.history.length > 1, forward: false });
     update();
@@ -74,8 +86,8 @@ export default function AppShell({ children }) {
         {children}
         <nav className="bottom-nav" aria-label="Mobile navigation">
           <Link href="/dashboard" className={pathname.startsWith("/dashboard") ? "active" : ""}><Icon name="home" size={22}/><span>Dashboard</span></Link>
-          <Link href="/workspace" className={pathname.startsWith("/workspace") ? "active" : ""}><Icon name="dashboard" size={22}/><span>Workspace</span></Link>
-          <Link href="/workspace?tab=pipeline" className=""><Icon name="pipeline" size={22}/><span>Pipeline</span></Link>
+          <Link href="/workspace" className={pathname.startsWith("/workspace") && workspaceSection !== "pipeline" ? "active" : ""} onClick={() => window.dispatchEvent(new CustomEvent("flowbase:workspace-section-changed", { detail: "" }))}><Icon name="dashboard" size={22}/><span>Workspace</span></Link>
+          <Link href="/workspace?tab=pipeline" className={pathname.startsWith("/workspace") && workspaceSection === "pipeline" ? "active" : ""} onClick={() => window.dispatchEvent(new CustomEvent("flowbase:workspace-section-changed", { detail: "pipeline" }))}><Icon name="pipeline" size={22}/><span>Pipeline</span></Link>
           <Link href="/tasks" className={pathname.startsWith("/tasks") || pathname.startsWith("/calendar") ? "active" : ""}><Icon name="tasks" size={22}/><span>Tasks</span></Link>
           <button type="button" aria-expanded={moreOpen} onClick={() => setMoreOpen((v) => !v)}><Icon name="more" size={22}/><span>More</span></button>
         </nav>

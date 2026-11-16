@@ -206,3 +206,28 @@
   .inbox-modal { padding: 18px; }
   .mobile-search-popover { padding: 10px; }
 }
+
+/* Platform-wide body typography: keep heading styles intact and standardize all other text. */
+body *:not(h1, h2, h3, h4, h5, h6, h1 *, h2 *, h3 *, h4 *, h5 *, h6 *, svg, svg *) {
+  color: #fff !important;
+  font-size: 15px !important;
+  letter-spacing: normal !important;
+}
+
+body *:not(h1, h2, h3, h4, h5, h6, h1 *, h2 *, h3 *, h4 *, h5 *, h6 *, b, strong, th, svg, svg *) {
+  font-weight: 400 !important;
+}
+
+body *:not(h1, h2, h3, h4, h5, h6, h1 *, h2 *, h3 *, h4 *, h5 *, h6 *, svg, svg *)::placeholder {
+  color: #fff !important;
+  opacity: 1 !important;
+}
+
+body :is(h1, h2, h3, h4, h5, h6, h1 *, h2 *, h3 *, h4 *, h5 *, h6 *) {
+  color: #fff !important;
+}
+
+button:disabled,
+.task-row.is-completed {
+  opacity: 1 !important;
+}

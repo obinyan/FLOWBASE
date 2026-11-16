@@ -1752,6 +1752,10 @@ body :is(.stat-note,.stat-row span,.workspace-muted,.tasks-empty p,.dashboard-wo
   .mobile-history { display:none !important; }
 }
 @media(max-width:960px) { .bottom-nav a,.bottom-nav > button { font-size:12px !important; } }
+@media(max-width:960px) {
+  html { background-attachment:scroll; background-color:#07104f; }
+  body { min-height:100dvh; background-color:#07104f; }
+}
 /* Product section headings and reference typography */
 .section-kicker { margin:0 !important; color:#fff !important; font-size:21px !important; font-weight:750 !important; line-height:1.2; }
 .pipeline-overview-heading,.leads-summary-title,.tasks-overview-title,.team-overview-title,.calendar-section-header > div:first-child { align-self:center; }
