@@ -40,8 +40,8 @@ export default function DashboardOverview() {
     return () => events.forEach((event) => window.removeEventListener(event, refresh));
   }, []);
 
-  const clients = useMemo(() => leads.filter(isClient), [leads]);
-  const prospects = useMemo(() => leads.filter((record) => !isClient(record)), [leads]);
+  const clients = useMemo(() => leads.filter((record) => !record.archived && isClient(record)), [leads]);
+  const prospects = useMemo(() => leads.filter((record) => !record.archived && !isClient(record)), [leads]);
   const clientTasks = useMemo(() => tasks.filter((task) => !task.completed && clients.some((client) => String(task.clientId) === String(client.id) || task.lead === client.name)), [tasks, clients]);
   const dueFollowUps = prospects.filter((lead) => lead.followUpDate && lead.followUpDate <= localDateKey()).length;
   const paidTotal = payments.filter((payment) => payment.status === "Paid").reduce((sum, payment) => sum + Number(payment.amount || 0), 0);

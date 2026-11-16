@@ -1,4 +1,5 @@
 const P = {
+  home: <><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></>,
   dashboard: <><rect x="3" y="3" width="7" height="9" rx="1.6"/><rect x="14" y="3" width="7" height="5" rx="1.6"/><rect x="14" y="12" width="7" height="9" rx="1.6"/><rect x="3" y="16" width="7" height="5" rx="1.6"/></>,
   pipeline: <path d="M3 6h2M8 6h13M3 12h2M8 12h13M3 18h2M8 18h13"/>,
   leads: <><circle cx="9" cy="8" r="3.4" fill="currentColor"/><path d="M2.5 20c0-3.6 2.9-5.8 6.5-5.8s6.5 2.2 6.5 5.8z" fill="currentColor"/><circle cx="17.2" cy="9" r="2.5" fill="currentColor"/><path d="M16.5 14.4c2.9 0 5 1.8 5 4.9h-4" fill="currentColor"/></>,
@@ -17,6 +18,8 @@ const P = {
   note: <path d="M4 20l4-1 11-11-3-3L5 16zM14 6l3 3"/>,
   clock: <><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></>,
   menu: <path d="M4 7h16M4 12h16M4 17h16"/>,
+  back: <><path d="M19 12H5m7 7-7-7 7-7"/></>,
+  forward: <><path d="M5 12h14m-7-7 7 7-7 7"/></>,
   close: <path d="M6 6l12 12M18 6L6 18"/>,
   sort: <><path d="M8 4v16M4.5 8 8 4l3.5 4M16 20V4m-3.5 12 3.5 4 3.5-4"/></>,
   filter: <><path d="M4 6h16M7 12h10m-7 6h4"/><circle cx="8" cy="6" r="1.5" fill="currentColor"/><circle cx="15" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="18" r="1.5" fill="currentColor"/></>,

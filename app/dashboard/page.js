@@ -7,14 +7,6 @@ import DashboardOverview from "@/components/DashboardOverview";
 export default function Dashboard() {
   return (
     <>
-      <section className="panel attention">
-        <p>Here’s what needs your attention today</p>
-        <div className="attention-actions">
-          <Link href="/calendar?view=follow-ups" className="btn-schedule">Schedule follow-ups</Link>
-          <Link href="/workspace" className="btn-pipeline">View workspace</Link>
-        </div>
-      </section>
-
       <DashboardOverview />
 
       <div className="mid">

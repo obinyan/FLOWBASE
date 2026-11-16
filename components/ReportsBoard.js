@@ -7,18 +7,7 @@ import { readLeads } from "@/lib/leads";
 
 const DAYS = [15, 19, 17, 27, 21, 31, 26, 34, 29, 39, 32, 41, 35, 44, 39, 46];
 const CONVERTED = Array(16).fill(0);
-const OWNERS = [
-  { name: "John", initials: "J", won: 0, conversion: 0, followups: 0, color: "violet", trend: Array(7).fill(0) },
-  { name: "You", initials: "Y", won: 0, conversion: 0, followups: 0, color: "blue", trend: Array(7).fill(0) },
-  { name: "Amaka", initials: "A", won: 0, conversion: 0, followups: 0, color: "green", trend: Array(7).fill(0) },
-  { name: "Tolu", initials: "T", won: 0, conversion: 0, followups: 0, color: "yellow", trend: Array(7).fill(0) },
-];
-const SOURCES = [
-  { name: "Instagram", count: 17, color: "#9477ff" },
-  { name: "Referral", count: 11, color: "#58c8f0" },
-  { name: "Website", count: 8, color: "#53d5aa" },
-  { name: "WhatsApp", count: 6, color: "#f4bb4d" },
-];
+const SOURCE_COLORS = ["#5478ff", "#7c9dff", "#93b8ff", "#b0c7ff", "#667eea"];
 const STAGES = [
   { name: "New", count: 42, color: "#58c8f0" },
   { name: "Contacted", count: 31, color: "#9477ff" },
@@ -66,6 +55,8 @@ export default function ReportsBoard() {
   const [analysisHistory, setAnalysisHistory] = useState([]);
   const [analysisResult, setAnalysisResult] = useState(null);
   const [reportLeads, setReportLeads] = useState([]);
+  const OWNERS = [...new Set(reportLeads.map((lead) => lead.owner).filter(Boolean))].map((name, index) => ({ name, initials: name[0]?.toUpperCase() || "?", color: ["blue", "violet", "green", "yellow"][index % 4], trend: Array(7).fill(0) }));
+  const SOURCES = [...new Set(reportLeads.map((lead) => lead.source).filter(Boolean))].map((name, index) => ({ name, color: SOURCE_COLORS[index % SOURCE_COLORS.length] }));
   useEffect(() => {
     const refresh = () => setReportLeads(readLeads());
     refresh();

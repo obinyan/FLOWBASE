@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Icon from "./Icons";
 import Logo from "./Logo";
@@ -10,6 +10,7 @@ import { QUICK_FILTERS, UPGRADE_URL, LEARN_MORE_URL } from "@/lib/config";
 
 export default function Sidebar({ open, onClose, searchQuery, onSearchChange }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [tasksOpen, setTasksOpen] = useState(() => pathname.startsWith("/tasks") || pathname.startsWith("/calendar"));
   const [workspaceOpen, setWorkspaceOpen] = useState(false);
@@ -69,7 +70,7 @@ export default function Sidebar({ open, onClose, searchQuery, onSearchChange }) 
                 className={`nav-item workspace-nav-toggle ${workspaceActive ? "active" : ""}`}
                 aria-expanded={workspaceOpen}
                 aria-controls="workspace-submenu"
-                onClick={() => setWorkspaceOpen((value) => !value)}
+                onClick={() => { if (!pathname.startsWith("/workspace")) { setWorkspaceOpen(true); setWorkspaceSection(""); router.push("/workspace"); } else { setWorkspaceOpen((value) => !value); } }}
               >
                 <Icon name="pipeline" size={28} />
                 <span>Workspace</span>

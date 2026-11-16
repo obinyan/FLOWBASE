@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Icon from "./Icons";
 import { AVATAR_SRC } from "@/lib/config";
 import { ADD_LEAD_EVENT } from "@/lib/leads";
@@ -9,6 +10,7 @@ import { readInbox as readInboxData } from "@/lib/inbox";
 const greetingForHour = (hour) => hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
 export default function Header() {
+  const router = useRouter();
   const [profileName, setProfileName] = useState("");
   const [period, setPeriod] = useState("Good morning");
   const [unreadMessages, setUnreadMessages] = useState(0);
@@ -49,7 +51,7 @@ export default function Header() {
   }, []);
 
   return <header className="panel topbar">
-    <h1 className="greeting" aria-live="polite">{profileName ? `${period} ${profileName}` : period}</h1>
+    <div className="greeting-block"><div className="history-actions"><button type="button" aria-label="Go back" onClick={() => router.back()}><Icon name="back" size={18}/></button><button type="button" aria-label="Go forward" onClick={() => router.forward()}><Icon name="forward" size={18}/></button></div><h1 className="greeting" aria-live="polite">{profileName ? `${period} ${profileName}` : period}</h1><div className="greeting-actions"><Link href="/calendar?view=follow-ups" className="btn-schedule">Schedule follow-ups</Link><Link href="/workspace" className="btn-pipeline">View workspace</Link></div></div>
     <div className="top-actions">
       {unreadMessages > 0 && <Link href="/inbox?view=messages" className="icon-btn" aria-label={`Messages, ${unreadMessages} unread`}><Icon name="mail" size={26} /><i className="dot" aria-hidden="true" /></Link>}
       {unreadNotifications > 0 && <Link href="/inbox?view=notifications" className="icon-btn" aria-label={`Notifications, ${unreadNotifications} unread`}><Icon name="bell" size={26} /><i className="dot" aria-hidden="true" /></Link>}

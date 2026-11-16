@@ -123,14 +123,14 @@ export default function SettingsPage() {
 
           <section className="settings-section" id="integrations">
             <SectionTitle title="Integrations" description="Connect Flowbase to the tools you use every day." icon="plug" />
-            <div className="settings-integration"><span className="integration-brand gmail">M</span><span className="settings-row-copy"><strong>Google Workspace</strong><small>Calendar and contacts</small></span><span className="integration-status"><i /> Connected</span><button type="button" className="settings-icon-button" aria-label="Integration options" onClick={() => setNotice("Google Workspace is connected.")}><Icon name="more" size={19} /></button></div>
-            <div className="settings-integration"><span className="integration-brand outlook">O</span><span className="settings-row-copy"><strong>Microsoft Outlook</strong><small>Calendar and email</small></span><button type="button" className="settings-button" onClick={() => setNotice("Outlook integration is coming soon.")}><Icon name="link" size={14} /> Connect</button></div>
+            <div className="settings-integration"><span className="integration-brand gmail">M</span><span className="settings-row-copy"><strong>Google Workspace</strong><small>Calendar and contacts</small></span><span className="integration-status"><i /> Connected</span></div>
+            <div className="settings-integration"><span className="integration-brand outlook">O</span><span className="settings-row-copy"><strong>Microsoft Outlook</strong><small>Calendar and email</small></span><span className="integration-status">Coming soon</span></div>
           </section>
 
           <section className="settings-section" id="data-privacy">
             <SectionTitle title="Data & privacy" description="Your data stays under your control." icon="lock" />
-            <div className="settings-row"><span className="settings-row-icon"><Icon name="download" size={17} /></span><span className="settings-row-copy"><strong>Export your data</strong><small>Download a copy of your Flowbase information.</small></span><button type="button" className="settings-button" onClick={() => setNotice("Your data export is being prepared.")}>Request export <Icon name="download" size={14} /></button></div>
-            <div className="settings-row"><span className="settings-row-icon"><Icon name="trash" size={17} /></span><span className="settings-row-copy"><strong>Account data</strong><small>Review data retention and account options.</small></span><button type="button" className="settings-text-button" onClick={() => setNotice("Contact support to manage account data.")}>Review options</button></div>
+            <div className="settings-row"><span className="settings-row-icon"><Icon name="download" size={17} /></span><span className="settings-row-copy"><strong>Export your data</strong><small>Download a copy of your Flowbase information.</small></span><span className="settings-muted-status">Export unavailable</span></div>
+            <div className="settings-row"><span className="settings-row-icon"><Icon name="trash" size={17} /></span><span className="settings-row-copy"><strong>Account data</strong><small>Review data retention and account options.</small></span></div>
           </section>
 
           <section className="settings-section" id="preferences">
