@@ -75,7 +75,7 @@ export default function TasksBoard() {
   const addTask = (event) => {
     event.preventDefault();
     if (!draft.title.trim() || !draft.lead.trim()) return;
-    setTasks((current) => [...current, { ...draft, id: Date.now(), due: draft.date, detail: draft.detail || "Task for this lead", completed: false }]);
+    setTasks((current) => [...current, { ...draft, id: crypto.randomUUID(), due: draft.date, detail: draft.detail || "Task for this lead", completed: false }]);
     setDraft({ title: "", lead: "", detail: "", priority: "Medium", date: TODAY, time: "10:00", owner: "You" });
     setFormOpen(false);
   };

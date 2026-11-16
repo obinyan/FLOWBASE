@@ -68,7 +68,7 @@ export default function WorkspaceBoard() {
     const record = createLead({ businessName: draft.name, contactName: draft.contact || draft.name, email: draft.email, source: "Existing client", stage: "Won", owner: "You", about: draft.notes, service: draft.service, recordType: "client" });
     const next = [record, ...readLeads()];
     writeLeads(next);
-    const entry = { id: Date.now(), clientId: record.id, type: "system", title: "Client added", note: `${record.name} was added as an existing client.`, createdAt: new Date().toISOString() };
+    const entry = { id: crypto.randomUUID(), clientId: record.id, type: "system", title: "Client added", note: `${record.name} was added as an existing client.`, createdAt: new Date().toISOString() };
     const nextActivity = [entry, ...readStored(ACTIVITY_KEY)];
     localStorage.setItem(ACTIVITY_KEY, JSON.stringify(nextActivity));
     setDraft({ name: "", contact: "", email: "", service: "", notes: "" });
@@ -79,7 +79,7 @@ export default function WorkspaceBoard() {
   const addWorkNote = (event) => {
     event.preventDefault();
     if (!selectedClient || !workNote.trim()) return;
-    const entry = { id: Date.now(), clientId: selectedClient.id, type: "work", title: "Work update", note: workNote.trim(), createdAt: new Date().toISOString() };
+    const entry = { id: crypto.randomUUID(), clientId: selectedClient.id, type: "work", title: "Work update", note: workNote.trim(), createdAt: new Date().toISOString() };
     const next = [entry, ...readStored(ACTIVITY_KEY)];
     localStorage.setItem(ACTIVITY_KEY, JSON.stringify(next));
     window.dispatchEvent(new Event("flowbase:client-activity-updated"));
@@ -88,13 +88,13 @@ export default function WorkspaceBoard() {
   const addPayment = (event) => {
     event.preventDefault();
     if (!paymentDraft.clientId || !Number(paymentDraft.amount)) return;
-    const record = { ...paymentDraft, id: Date.now(), amount: Number(paymentDraft.amount), clientId: String(paymentDraft.clientId), createdAt: new Date().toISOString() };
+    const record = { ...paymentDraft, id: crypto.randomUUID(), amount: Number(paymentDraft.amount), clientId: String(paymentDraft.clientId), createdAt: new Date().toISOString() };
     const next = [record, ...readStored(PAYMENT_KEY)];
     localStorage.setItem(PAYMENT_KEY, JSON.stringify(next));
     window.dispatchEvent(new Event("flowbase:payments-updated"));
     const account = leads.find((item) => String(item.id) === record.clientId);
     if (account && isClient(account)) {
-      const activityEntry = { id: Date.now() + 1, clientId: record.clientId, type: "payment", title: `${record.status} payment recorded`, note: `${record.service || "Payment"} · ${money(record.amount)}`, createdAt: new Date().toISOString() };
+      const activityEntry = { id: crypto.randomUUID(), clientId: record.clientId, type: "payment", title: `${record.status} payment recorded`, note: `${record.service || "Payment"} · ${money(record.amount)}`, createdAt: new Date().toISOString() };
       localStorage.setItem(ACTIVITY_KEY, JSON.stringify([activityEntry, ...readStored(ACTIVITY_KEY)]));
       window.dispatchEvent(new Event("flowbase:client-activity-updated"));
     }

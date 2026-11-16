@@ -118,7 +118,7 @@ export default function CalendarBoard() {
   const addEvent = (event) => {
     event.preventDefault();
     if (!draft.title.trim() || !draft.lead.trim()) return;
-    const added = { ...draft, id: Date.now(), overdue: false };
+    const added = { ...draft, id: crypto.randomUUID(), overdue: false };
     const nextEvents = [...events, added];
     setEvents(nextEvents);
     syncTaskCalendar(readTasks(), nextEvents);

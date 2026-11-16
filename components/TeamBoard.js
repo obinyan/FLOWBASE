@@ -2,9 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Icon from "@/components/Icons";
+import { changeMemberStatus, createWorkspaceInvitation, deleteWorkspaceInvitation, getTeamData, removeWorkspaceMember, saveTeamRole } from "@/lib/backendSync";
 
 const SEED = [];
-const ROLES = ["Admin", "Manager", "Sales rep", "Account executive", "Business development", "Customer success", "Marketing", "Operations", "Analyst", "Viewer"];
+const ROLES = ["Owner", "Admin", "Member", "Viewer"];
 
 function initialsFor(name) {
   return name.trim().split(/\s+/).slice(0, 2).map((part) => part[0] || "").join("").toUpperCase();
@@ -24,15 +25,16 @@ export default function TeamBoard() {
   const [draft, setDraft] = useState({ name: "", email: "", role: "Sales rep", status: "Active", leads: 0, tasks: 0 });
 
   useEffect(() => {
-    try {
-      window.localStorage.removeItem("flowbase:team:v1");
-    } catch {}
-    setStorageReady(true);
+    const loadMembers = async () => {
+      try { setMembers(await getTeamData()); }
+      catch (error) { console.error("Could not load workspace team:", error); }
+      finally { setStorageReady(true); }
+    };
+    window.addEventListener("flowbase:records-ready", loadMembers);
+    window.addEventListener("flowbase:team-updated", loadMembers);
+    loadMembers();
+    return () => { window.removeEventListener("flowbase:records-ready", loadMembers); window.removeEventListener("flowbase:team-updated", loadMembers); };
   }, []);
-  useEffect(() => {
-    if (!storageReady) return;
-    try { window.localStorage.setItem("flowbase:team:v1", JSON.stringify(members)); } catch {}
-  }, [members, storageReady]);
 
   const activeCount = members.filter((member) => member.status === "Active").length;
   const invitationCount = members.filter((member) => member.status === "Invited").length;
@@ -41,9 +43,9 @@ export default function TeamBoard() {
     const search = query.trim().toLowerCase();
     return (!search || `${member.name} ${member.email} ${member.role}`.toLowerCase().includes(search))
       && (role === "All roles" || member.role === role)
-      && (status === "All status" || (status === "Away" ? member.presence === "Away" : member.status === status))
+      && (status === "All status" || member.status === status)
       && (quickFilter !== "Active members" || member.status === "Active")
-      && (quickFilter !== "Admins" || member.role === "Admin")
+      && (quickFilter !== "Admins" || ["Owner", "Admin"].includes(member.role))
       && (quickFilter !== "Invitations" || member.status === "Invited");
   }), [members, query, role, status, quickFilter]);
   const selectedAll = visibleMembers.length > 0 && visibleMembers.every((member) => selected.includes(member.id));
@@ -51,19 +53,46 @@ export default function TeamBoard() {
   const capacity = Math.min(100, Math.round((totalLeads / 222) * 100));
 
   const resetFilters = () => { setQuery(""); setRole("All roles"); setStatus("All status"); setQuickFilter("All members"); };
-  const updateMember = (id, patch) => setMembers((current) => current.map((member) => member.id === id ? { ...member, ...patch } : member));
-  const openInvite = () => { setDraft({ name: "", email: "", role: "Sales rep", status: "Active", leads: 0, tasks: 0 }); setModal({ type: "invite" }); };
-  const openEdit = (member) => { setDraft({ name: member.name, email: member.email, role: member.role, status: member.status, leads: member.leads, tasks: member.tasks }); setModal({ type: "edit", id: member.id }); };
-  const saveMember = (event) => {
-    event.preventDefault();
-    if (!draft.name.trim() || !draft.email.trim()) return;
-    const member = { ...draft, initials: initialsFor(draft.name), leads: Number(draft.leads) || 0, tasks: Number(draft.tasks) || 0 };
-    if (modal.type === "edit") updateMember(modal.id, member);
-    else setMembers((current) => [...current, { ...member, id: Date.now(), status: "Invited", leads: 0, tasks: 0 }]);
-    setModal(null);
+  const updateMember = async (id, patch) => {
+    const member = members.find((item) => item.id === id);
+    if (!member || member.invitation) return;
+    try {
+      if (patch.role && patch.role !== member.role) await saveTeamRole(member.userId, patch.role);
+      if (patch.status && patch.status !== member.status) await changeMemberStatus(member.userId, patch.status);
+      window.dispatchEvent(new Event("flowbase:team-updated"));
+    } catch (error) { console.error("Could not update team member:", error); }
   };
-  const removeMember = (id) => { setMembers((current) => current.filter((member) => member.id !== id)); setSelected((current) => current.filter((value) => value !== id)); setMenuId(null); };
-  const bulkSetRole = (nextRole) => { setMembers((current) => current.map((member) => selected.includes(member.id) ? { ...member, role: nextRole } : member)); setSelected([]); };
+  const openInvite = () => { setDraft({ name: "", email: "", role: "Member", status: "Active", leads: 0, tasks: 0 }); setModal({ type: "invite" }); };
+  const openEdit = (member) => { setDraft({ name: member.name, email: member.email, role: member.role, status: member.status, leads: member.leads, tasks: member.tasks }); setModal({ type: "edit", id: member.id }); };
+  const saveMember = async (event) => {
+    event.preventDefault();
+    if (!draft.email.trim()) return;
+    try {
+      if (modal.type === "invite") await createWorkspaceInvitation(draft.email.trim(), draft.role);
+      else if (modal.type === "edit") {
+        const member = members.find((item) => item.id === modal.id);
+        if (member?.invitation) {
+          await deleteWorkspaceInvitation(member.id);
+          await createWorkspaceInvitation(draft.email.trim(), draft.role);
+        } else {
+          await updateMember(modal.id, { role: draft.role, status: draft.status });
+        }
+      }
+      setModal(null);
+      window.dispatchEvent(new Event("flowbase:team-updated"));
+    } catch (error) { window.alert(error.message || "The team change could not be saved."); }
+  };
+  const removeMember = async (id) => {
+    const member = members.find((item) => item.id === id);
+    try {
+      if (member?.invitation) await deleteWorkspaceInvitation(id);
+      else if (member?.userId && !member.isCurrent) await removeWorkspaceMember(member.userId);
+      setSelected((current) => current.filter((value) => value !== id));
+      setMenuId(null);
+      window.dispatchEvent(new Event("flowbase:team-updated"));
+    } catch (error) { window.alert(error.message || "This member could not be removed."); }
+  };
+  const bulkSetRole = async (nextRole) => { await Promise.all(members.filter((member) => selected.includes(member.id) && !member.invitation).map((member) => saveTeamRole(member.userId, nextRole))); setSelected([]); window.dispatchEvent(new Event("flowbase:team-updated")); };
 
   return <div className="team-page">
     <section className="team-heading panel"><div><h1>Team</h1><p>Bring your people together and see work at a glance.</p></div><div className="team-heading-actions"><label className="team-top-search"><Icon name="search" size={16} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search" aria-label="Search team" />{query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search"><Icon name="close" size={14} /></button>}</label><button type="button" className="team-invite-button" onClick={openInvite}><Icon name="plus" size={16} />Invite member</button></div></section>
@@ -78,13 +107,13 @@ export default function TeamBoard() {
     <div className="team-content-grid"><section className="team-list-panel">
       <div className="team-toolbar"><label className="team-list-search"><Icon name="search" size={14} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search name or email" aria-label="Search team members" />{query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search"><Icon name="close" size={13} /></button>}</label>
         <label className="team-select"><select value={role} onChange={(event) => setRole(event.target.value)} aria-label="Filter by role"><option>All roles</option>{ROLES.map((item) => <option key={item}>{item}</option>)}</select><Icon name="chevron" size={13} /></label>
-        <label className="team-select"><select value={status} onChange={(event) => setStatus(event.target.value)} aria-label="Filter by status"><option>All status</option><option>Active</option><option>Invited</option><option>Away</option></select><Icon name="chevron" size={13} /></label>
+        <label className="team-select"><select value={status} onChange={(event) => setStatus(event.target.value)} aria-label="Filter by status"><option>All status</option><option>Active</option><option>Suspended</option><option>Invited</option></select><Icon name="chevron" size={13} /></label>
         <label className="team-selectall"><input type="checkbox" checked={selectedAll} onChange={() => setSelected((current) => selectedAll ? current.filter((id) => !visibleMembers.some((member) => member.id === id)) : [...new Set([...current, ...visibleMembers.map((member) => member.id)])])} />Select all</label>
         <div className="team-more-wrap"><button type="button" aria-label="Team options" aria-expanded={showMore} onClick={() => setShowMore((value) => !value)}><Icon name="more" size={19} /></button>{showMore && <div className="pipeline-popover"><button type="button" onClick={() => { setQuickFilter("Active members"); setShowMore(false); }}>Show active members</button><button type="button" onClick={() => { resetFilters(); setShowMore(false); }}>Reset filters</button><button type="button" onClick={() => { openInvite(); setShowMore(false); }}>Invite member</button></div>}</div>
       </div>
       <div className="team-board-filters"><span>TEAM FILTERS</span>{["Active members", "Admins", "Invitations"].map((filter) => <button type="button" key={filter} className={quickFilter === filter ? "active" : ""} onClick={() => setQuickFilter(quickFilter === filter ? "All members" : filter)}><i />{filter}</button>)}{quickFilter !== "All members" && <button type="button" className="team-clear-filter" onClick={() => setQuickFilter("All members")}>Clear</button>}</div>
       {selected.length > 0 && <div className="team-bulkbar"><span>{selected.length} selected</span><label>Set role<select key={selected.length} defaultValue="" onChange={(event) => event.target.value && bulkSetRole(event.target.value)}><option value="" disabled>Choose role</option>{ROLES.map((item) => <option key={item}>{item}</option>)}</select></label><button type="button" onClick={() => setSelected([])}>Clear selection</button></div>}
-      <div className="team-table-scroll"><table className="team-table"><thead><tr><th className="team-check-cell" /><th>MEMBER</th><th>ROLE</th><th>LEADS</th><th>TASKS</th><th>STATUS</th><th aria-label="Actions" /></tr></thead><tbody>{visibleMembers.map((member) => <tr key={member.id} className={selected.includes(member.id) ? "selected" : ""}><td className="team-check-cell"><input type="checkbox" checked={selected.includes(member.id)} onChange={() => setSelected((current) => current.includes(member.id) ? current.filter((id) => id !== member.id) : [...current, member.id])} aria-label={`Select ${member.name}`} /></td><td><button type="button" className="team-person-cell" onClick={() => openEdit(member)}><i className="team-avatar">{member.initials}</i><span><b>{member.name}</b><small>{member.email}</small></span></button></td><td><label className="team-role-pill"><select value={member.role} onChange={(event) => updateMember(member.id, { role: event.target.value })} aria-label={`Role for ${member.name}`}>{ROLES.map((item) => <option key={item}>{item}</option>)}</select><Icon name="chevron" size={11} /></label></td><td>{member.leads}</td><td>{member.tasks}</td><td><label className={`team-status-pill ${member.presence === "Away" ? "away" : member.status.toLowerCase()}`}><i /><select value={member.presence === "Away" && member.status === "Active" ? "Away" : member.status} onChange={(event) => updateMember(member.id, { status: event.target.value === "Away" ? "Active" : event.target.value, presence: event.target.value === "Away" ? "Away" : "" })} aria-label={`Status for ${member.name}`}><option>Active</option><option>Away</option><option>Invited</option></select><Icon name="chevron" size={11} /></label></td><td className="team-row-action"><div className="team-more-wrap"><button type="button" aria-label={`Actions for ${member.name}`} aria-expanded={menuId === member.id} onClick={() => setMenuId(menuId === member.id ? null : member.id)}><Icon name="more" size={18} /></button>{menuId === member.id && <div className="pipeline-popover"><button type="button" onClick={() => { openEdit(member); setMenuId(null); }}>Edit member</button><button type="button" onClick={() => { updateMember(member.id, { status: "Active", presence: "" }); setMenuId(null); }}>{member.status === "Invited" ? "Accept invitation" : member.presence === "Away" ? "Set active" : "Set away"}</button><button type="button" onClick={() => removeMember(member.id)}>Remove member</button></div>}</div></td></tr>)}</tbody></table>{visibleMembers.length === 0 && <div className="team-empty"><Icon name="leads" size={24} /><p>No team members match these filters.</p><button type="button" onClick={resetFilters}>Clear filters</button></div>}</div>
+      <div className="team-table-scroll"><table className="team-table"><thead><tr><th className="team-check-cell" /><th>MEMBER</th><th>ROLE</th><th>LEADS</th><th>TASKS</th><th>STATUS</th><th aria-label="Actions" /></tr></thead><tbody>{visibleMembers.map((member) => <tr key={member.id} className={selected.includes(member.id) ? "selected" : ""}><td className="team-check-cell"><input type="checkbox" checked={selected.includes(member.id)} onChange={() => setSelected((current) => current.includes(member.id) ? current.filter((id) => id !== member.id) : [...current, member.id])} aria-label={`Select ${member.name}`} /></td><td><button type="button" className="team-person-cell" onClick={() => openEdit(member)}><i className="team-avatar">{member.initials}</i><span><b>{member.name}</b><small>{member.email}</small></span></button></td><td><label className="team-role-pill"><select value={member.role} disabled={member.invitation || member.isCurrent} onChange={(event) => updateMember(member.id, { role: event.target.value })} aria-label={`Role for ${member.name}`}>{ROLES.map((item) => <option key={item}>{item}</option>)}</select><Icon name="chevron" size={11} /></label></td><td>{member.leads}</td><td>{member.tasks}</td><td><label className={`team-status-pill ${member.status.toLowerCase()}`}><i /><select value={member.status} disabled={member.invitation || member.isCurrent} onChange={(event) => updateMember(member.id, { status: event.target.value })} aria-label={`Status for ${member.name}`}><option>Active</option><option>Suspended</option><option>Invited</option></select><Icon name="chevron" size={11} /></label></td><td className="team-row-action"><div className="team-more-wrap"><button type="button" aria-label={`Actions for ${member.name}`} aria-expanded={menuId === member.id} onClick={() => setMenuId(menuId === member.id ? null : member.id)}><Icon name="more" size={18} /></button>{menuId === member.id && <div className="pipeline-popover"><button type="button" onClick={() => { openEdit(member); setMenuId(null); }}>Edit member</button><button type="button" onClick={() => { if (member.invitation) openEdit(member); else updateMember(member.id, { status: member.status === "Active" ? "Suspended" : "Active" }); setMenuId(null); }}>{member.status === "Invited" ? "Edit invitation" : member.status === "Active" ? "Suspend access" : "Restore access"}</button><button type="button" disabled={member.isCurrent} onClick={() => removeMember(member.id)}>{member.invitation ? "Revoke invitation" : "Remove member"}</button></div>}</div></td></tr>)}</tbody></table>{visibleMembers.length === 0 && <div className="team-empty"><Icon name="leads" size={24} /><p>No team members match these filters.</p><button type="button" onClick={resetFilters}>Clear filters</button></div>}</div>
       <button type="button" className="team-invite-strip" onClick={openInvite}><Icon name="plus" size={13} />Invite a teammate</button>
     </section>
 
@@ -94,6 +123,6 @@ export default function TeamBoard() {
       <button type="button" className="team-activity-link" onClick={() => setModal({ type: "activity" })}>View team activity <Icon name="arrow" size={13} /></button>
     </aside></div>
 
-    {modal && <div className="pipeline-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setModal(null); }}><section className="pipeline-modal team-modal" role="dialog" aria-modal="true" aria-labelledby="team-modal-title"><header><div><h2 id="team-modal-title">{modal.type === "invite" ? "Invite a teammate" : modal.type === "activity" ? "Team activity" : "Edit team member"}</h2><p>{modal.type === "invite" ? "Send an invitation to your workspace." : modal.type === "activity" ? "Recent changes across your workspace." : "Update access and team details."}</p></div><button type="button" aria-label="Close" onClick={() => setModal(null)}><Icon name="close" size={18} /></button></header>{modal.type === "activity" ? <div className="team-activity-modal-list"><p>No team activity yet. Updates will appear here as your team gets started.</p></div> : <form onSubmit={saveMember}><label>Full name<input required autoFocus value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} placeholder="Member name" /></label><label>Email address<input required type="email" value={draft.email} onChange={(event) => setDraft({ ...draft, email: event.target.value })} placeholder="name@company.com" /></label><div className="pipeline-modal-fields"><label>Role<select value={ROLES.includes(draft.role) ? draft.role : "Custom"} onChange={(event) => setDraft({ ...draft, role: event.target.value === "Custom" ? "" : event.target.value })}>{ROLES.map((item) => <option key={item}>{item}</option>)}<option value="Custom">Custom role…</option></select>{(!ROLES.includes(draft.role) || draft.role === "") && <input className="team-custom-role" required autoFocus={modal.type === "invite"} value={draft.role} onChange={(event) => setDraft({ ...draft, role: event.target.value })} placeholder="Type a custom role" />}</label>{modal.type === "edit" && <label>Status<select value={draft.status} onChange={(event) => setDraft({ ...draft, status: event.target.value })}><option>Active</option><option>Invited</option></select></label>}</div>{modal.type === "edit" && <div className="pipeline-modal-fields"><label>Open leads<input type="number" min="0" value={draft.leads} onChange={(event) => setDraft({ ...draft, leads: event.target.value })} /></label><label>Tasks this week<input type="number" min="0" value={draft.tasks} onChange={(event) => setDraft({ ...draft, tasks: event.target.value })} /></label></div>}<footer><button type="button" onClick={() => setModal(null)}>Cancel</button><button className="pipeline-add" type="submit">{modal.type === "invite" ? "Send invitation" : "Save changes"}</button></footer></form>}</section></div>}
+    {modal && <div className="pipeline-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setModal(null); }}><section className="pipeline-modal team-modal" role="dialog" aria-modal="true" aria-labelledby="team-modal-title"><header><div><h2 id="team-modal-title">{modal.type === "invite" ? "Invite a teammate" : modal.type === "activity" ? "Team activity" : "Edit team member"}</h2><p>{modal.type === "invite" ? "Send an invitation to your workspace." : modal.type === "activity" ? "Recent changes across your workspace." : "Update access and team details."}</p></div><button type="button" aria-label="Close" onClick={() => setModal(null)}><Icon name="close" size={18} /></button></header>{modal.type === "activity" ? <div className="team-activity-modal-list"><p>No team activity yet. Updates will appear here as your team gets started.</p></div> : <form onSubmit={saveMember}><label>Full name<input autoFocus disabled={modal.type === "edit"} value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} placeholder="Member name" /></label><label>Email address<input required type="email" disabled={modal.type === "edit" && !members.find((item) => item.id === modal.id)?.invitation} value={draft.email} onChange={(event) => setDraft({ ...draft, email: event.target.value })} placeholder="name@company.com" /></label><div className="pipeline-modal-fields"><label>Role<select value={ROLES.includes(draft.role) ? draft.role : "Member"} onChange={(event) => setDraft({ ...draft, role: event.target.value })}>{ROLES.map((item) => <option key={item}>{item}</option>)}</select></label>{modal.type === "edit" && <label>Status<select value={draft.status} onChange={(event) => setDraft({ ...draft, status: event.target.value })}><option>Active</option><option>Suspended</option></select></label>}</div>{modal.type === "edit" && <div className="pipeline-modal-fields"><label>Open leads<input type="number" min="0" value={draft.leads} onChange={(event) => setDraft({ ...draft, leads: event.target.value })} /></label><label>Tasks this week<input type="number" min="0" value={draft.tasks} onChange={(event) => setDraft({ ...draft, tasks: event.target.value })} /></label></div>}<footer><button type="button" onClick={() => setModal(null)}>Cancel</button><button className="pipeline-add" type="submit">{modal.type === "invite" ? "Send invitation" : "Save changes"}</button></footer></form>}</section></div>}
   </div>;
 }

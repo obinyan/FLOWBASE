@@ -40,7 +40,7 @@ function AuthForm({ mode }) {
           email, password,
           options: {
             data: { first_name: firstName || "", last_name: rest.join(" ") },
-            emailRedirectTo: `${window.location.origin}/auth/callback`,
+            emailRedirectTo: `${window.location.origin}/auth/callback${getInviteToken() ? `?next=${encodeURIComponent(`/invite?token=${getInviteToken()}`)}` : ""}`,
           },
         });
         if (signUpError) throw signUpError;
@@ -49,7 +49,9 @@ function AuthForm({ mode }) {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
         if (signInError) throw signInError;
       }
-      router.push("/dashboard");
+      const inviteToken = getInviteToken();
+      if (inviteToken) window.sessionStorage.removeItem("flowbase:invite-token");
+      router.push(inviteToken ? `/invite?token=${encodeURIComponent(inviteToken)}` : "/dashboard");
       router.refresh();
     } catch (err) {
       setError(err.message || "Something went wrong. Please try again.");
@@ -63,7 +65,7 @@ function AuthForm({ mode }) {
     const supabase = createClient();
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: `${window.location.origin}/auth/callback${getInviteToken() ? `?next=${encodeURIComponent(`/invite?token=${getInviteToken()}`)}` : ""}` },
     });
     if (oauthError) setError(oauthError.message);
   }
@@ -115,6 +117,11 @@ function AuthForm({ mode }) {
       </section>
     </main>
   );
+}
+
+function getInviteToken() {
+  if (typeof window === "undefined") return "";
+  return new URLSearchParams(window.location.search).get("invite") || window.sessionStorage.getItem("flowbase:invite-token") || "";
 }
 
 export default function AuthPage({ mode }) {
