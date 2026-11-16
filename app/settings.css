@@ -208,7 +208,7 @@
 }
 
 /* Platform-wide body typography: keep heading styles intact and standardize all other text. */
-body *:not(h1, h2, h3, h4, h5, h6, h1 *, h2 *, h3 *, h4 *, h5 *, h6 *, svg, svg *) {
+body *:not(h1, h2, h3, h4, h5, h6, h1 *, h2 *, h3 *, h4 *, h5 *, h6 *, svg, svg *):not(.bottom-nav):not(.bottom-nav *) {
   color: #fff !important;
   font-size: 15px !important;
   letter-spacing: normal !important;
@@ -221,6 +221,12 @@ body *:not(h1, h2, h3, h4, h5, h6, h1 *, h2 *, h3 *, h4 *, h5 *, h6 *, b, strong
 body *:not(h1, h2, h3, h4, h5, h6, h1 *, h2 *, h3 *, h4 *, h5 *, h6 *, svg, svg *)::placeholder {
   color: #fff !important;
   opacity: 1 !important;
+}
+
+.bottom-nav,
+.bottom-nav *:not(svg, svg *) {
+  color: #fff !important;
+  letter-spacing: normal !important;
 }
 
 body :is(h1, h2, h3, h4, h5, h6, h1 *, h2 *, h3 *, h4 *, h5 *, h6 *) {
