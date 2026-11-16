@@ -1742,3 +1742,13 @@ html { background: radial-gradient(1100px 760px at 88% -10%, #3159df 0%, transpa
 .workspace-client-card-wrap .workspace-client-remove:nth-last-child(1) { right:12px; }
 .workspace-client-card-wrap .workspace-client-remove:nth-last-child(2) { right:70px; }
 .team-report:has(tbody:empty) footer { display:none; }
+/* Readable body copy and safe mobile clearance */
+body :is(p,small,label,button,a,td,th,input,select,textarea,li,time,dd,dt) { color:#fff; font-size:max(14px,1em); }
+body :is(.stat-note,.stat-row span,.workspace-muted,.tasks-empty p,.dashboard-workspace-empty,.dashboard-workspace-metrics span,.dashboard-client-activity small,.global-search-copy small,.quick-item) { color:#fff !important; font-size:max(14px,1em) !important; }
+.stat-label,.tasks-stat > span,.workspace-metrics article > span { font-size:13px !important; }
+@media(max-width:960px) {
+  .main { padding-bottom:156px !important; }
+  .greeting-actions { display:none !important; }
+  .mobile-history { display:none !important; }
+}
+@media(max-width:960px) { .bottom-nav a,.bottom-nav > button { font-size:12px !important; } }

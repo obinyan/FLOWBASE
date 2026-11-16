@@ -52,9 +52,6 @@ export default function AppShell({ children }) {
       <div className="main">
         <div className="mobilebar">
           <div className="mobile-history"><button type="button" aria-label="Go back" disabled={!historyState.back} onClick={() => router.back()}><Icon name="back" size={19} /></button><button type="button" aria-label="Go forward" disabled={!historyState.forward} onClick={() => router.forward()}><Icon name="forward" size={19} /></button></div>
-          <button type="button" className="menu-btn" aria-label="Open menu" onClick={() => setOpen(true)}>
-            <Icon name="menu" size={26} />
-          </button>
           <Logo />
           <div className="mobile-search">
             <button type="button" className="mobile-search-toggle" aria-label={searchOpen ? "Close search" : "Open search"} aria-expanded={searchOpen} aria-controls="mobile-search-field" onClick={() => { if (searchOpen) setQuery(""); setSearchOpen((value) => !value); }}>
