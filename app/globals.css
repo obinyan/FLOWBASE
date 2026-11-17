@@ -1742,6 +1742,15 @@ html { background: radial-gradient(1100px 760px at 88% -10%, #3159df 0%, transpa
 .workspace-client-card-wrap .workspace-client-remove:nth-last-child(1) { right:12px; }
 .workspace-client-card-wrap .workspace-client-remove:nth-last-child(2) { right:70px; }
 .team-report:has(tbody:empty) footer { display:none; }
+.workspace-tabs { gap:8px; padding:10px; }
+.workspace-tabs button { min-height:46px; padding:5px 19px; }
+.pipeline-overview-heading { align-self:stretch; width:100%; padding-left:0; padding-right:0; text-align:left; }
+.report-stat { min-width:0; }
+.report-stat > span,.report-stat > strong { min-width:0; }
+.report-stat > strong { overflow-wrap:anywhere; }
+@media(max-width:650px) {
+  .workspace-tabs button { padding:5px 15px; }
+}
 /* Readable body copy and safe mobile clearance */
 body :is(p,small,label,button,a,td,th,input,select,textarea,li,time,dd,dt) { color:#fff; font-size:max(14px,1em); }
 body :is(.stat-note,.stat-row span,.workspace-muted,.tasks-empty p,.dashboard-workspace-empty,.dashboard-workspace-metrics span,.dashboard-client-activity small,.global-search-copy small,.quick-item) { color:#fff !important; font-size:max(14px,1em) !important; }
@@ -1758,7 +1767,7 @@ body :is(.stat-note,.stat-row span,.workspace-muted,.tasks-empty p,.dashboard-wo
 }
 /* Product section headings and reference typography */
 .section-kicker { margin:0 !important; color:#fff !important; font-size:21px !important; font-weight:750 !important; line-height:1.2; }
-.pipeline-overview-heading,.leads-summary-title,.tasks-overview-title,.team-overview-title,.calendar-section-header > div:first-child { align-self:center; }
+.leads-summary-title,.tasks-overview-title,.team-overview-title,.calendar-section-header > div:first-child { align-self:center; }
 .pipeline-overview-heading h2.section-kicker,.leads-summary-title h2.section-kicker,.tasks-overview-title h2.section-kicker,.team-overview-title h2.section-kicker,.calendar-section-header h2.section-kicker { text-transform:none; }
 .nav-item { font-size:16px; font-weight:600; gap:13px; min-height:44px; }
 .nav-item svg { width:22px; height:22px; }

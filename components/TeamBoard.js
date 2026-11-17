@@ -98,10 +98,10 @@ export default function TeamBoard() {
     <section className="team-heading panel"><div><h1>Team</h1><p>Bring your people together and see work at a glance.</p></div><div className="team-heading-actions"><label className="team-top-search"><Icon name="search" size={16} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search" aria-label="Search team" />{query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search"><Icon name="close" size={14} /></button>}</label><button type="button" className="team-invite-button" onClick={openInvite}><Icon name="plus" size={16} />Invite member</button></div></section>
 
     <section className="team-overview"><div className="team-overview-title"><h2 className="section-kicker">Workspace People</h2></div><div className="team-stats">
-      <button className="team-stat" style={{ "--team-stat-color": "#9477ff" }} onClick={resetFilters}><span>TEAM MEMBERS</span><strong>{members.length}</strong><small>{activeCount} active now</small></button>
-      <a className="team-stat" href="/leads" style={{ "--team-stat-color": "#58c8f0" }}><span>OPEN LEADS</span><strong>{totalLeads}</strong><small>Across the team</small></a>
-      <a className="team-stat" href="/tasks" style={{ "--team-stat-color": "#f4bb4d" }}><span>TASKS THIS WEEK</span><strong>0</strong><small>0 completed</small></a>
-      <button className="team-stat" style={{ "--team-stat-color": "#f28d77" }} onClick={() => setQuickFilter(quickFilter === "Invitations" ? "All members" : "Invitations")}><span>PENDING INVITES</span><strong>{invitationCount}</strong><small>Awaiting response</small></button>
+      <button className="team-stat" style={{ "--team-stat-color": "#9477ff" }} onClick={resetFilters}><span>TEAM MEMBERS</span><strong>{members.length}</strong></button>
+      <a className="team-stat" href="/leads" style={{ "--team-stat-color": "#58c8f0" }}><span>OPEN LEADS</span><strong>{totalLeads}</strong></a>
+      <a className="team-stat" href="/tasks" style={{ "--team-stat-color": "#f4bb4d" }}><span>TASKS THIS WEEK</span><strong>0</strong></a>
+      <button className="team-stat" style={{ "--team-stat-color": "#f28d77" }} onClick={() => setQuickFilter(quickFilter === "Invitations" ? "All members" : "Invitations")}><span>PENDING INVITES</span><strong>{invitationCount}</strong></button>
     </div></section>
 
     <div className="team-content-grid"><section className="team-list-panel">
