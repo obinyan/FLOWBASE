@@ -31,7 +31,7 @@ export default function DashboardActivity() {
   return (
     <section className="panel activity">
       <div className="card-head">
-        <div><h2>Recent Activity</h2><small>Latest tasks and follow-ups</small></div>
+        <div><h2>Recent Activity</h2></div>
         <Link href="/tasks" className="head-link">View full tasks <Icon name="arrow" size={15} /></Link>
       </div>
       <ul className="activity-list">

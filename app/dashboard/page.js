@@ -17,7 +17,7 @@ export default function Dashboard() {
           ))}{AGENDA.items.length === 0 && <li className="dashboard-empty"><span className="act-icon indigo"><Icon name="calendar" size={15} /></span><div><small>New activity will appear here when you add leads.</small></div></li>}</ol>
         </section>
         <section className="panel priority">
-          <div className="card-head"><div><h2>Priority leads</h2><small>High intent and ready for attention</small></div><Link href="/leads" className="head-link">See all <Icon name="arrow" size={15} /></Link></div>
+          <div className="card-head"><div><h2>Priority leads</h2></div><Link href="/leads" className="head-link">See all <Icon name="arrow" size={15} /></Link></div>
           <ul className="lead-list">{PRIORITY.map((l) => (
             <li key={l.name}><Link href="/leads" className="lead-card"><span className="lead-avatar">{l.initials}</span><div className="lead-body"><div className="lead-top"><b>{l.name}</b><span className="rating">{l.rating}</span></div><small>{l.meta}</small><div className="lead-bottom"><strong>{l.status}</strong><span>{l.when}</span></div></div></Link></li>
           ))}{PRIORITY.length === 0 && <li className="dashboard-empty"><span className="act-icon teal"><Icon name="leads" size={15} /></span><div><b>No priority leads</b><small>Leads marked for attention will show here.</small></div></li>}</ul>
