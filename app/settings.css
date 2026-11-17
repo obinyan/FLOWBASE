@@ -210,8 +210,8 @@
 /* Platform-wide body typography: keep heading styles intact and standardize all other text. */
 body *:not(h1, h2, h3, h4, h5, h6, h1 *, h2 *, h3 *, h4 *, h5 *, h6 *, svg, svg *):not(.bottom-nav):not(.bottom-nav *) {
   color: #fff !important;
-  font-size: 15px !important;
-  letter-spacing: normal !important;
+  font-size: 14px !important;
+  /*letter-spacing: normal !important;*/
 }
 
 body *:not(h1, h2, h3, h4, h5, h6, h1 *, h2 *, h3 *, h4 *, h5 *, h6 *, b, strong, th, svg, svg *) {

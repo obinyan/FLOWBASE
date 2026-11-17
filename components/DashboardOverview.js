@@ -68,7 +68,7 @@ export default function DashboardOverview() {
 
     <section className="panel dashboard-workspace-snapshot">
       <header className="card-head">
-        <div><h2>Workspace snapshot</h2><small>Current client work and recent updates</small></div>
+        <div><h2>Workspace snapshot</h2></div>
         <Link href="/workspace" className="head-link">Open workspace <Icon name="arrow" size={15}/></Link>
       </header>
       <div className="dashboard-workspace-content">

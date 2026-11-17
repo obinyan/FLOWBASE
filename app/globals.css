@@ -1694,7 +1694,7 @@ small { display: block; }
 .dashboard-workspace-metrics a:hover,.dashboard-client-activity:hover { background:rgba(255,255,255,.075); }
 .dashboard-workspace-metrics span { color:#bcb6d8; font-size:8px; font-weight:700; letter-spacing:.04em; }
 .dashboard-workspace-metrics b { color:#fff; font-size:12px; }
-.dashboard-workspace-activity h3 { margin:0 0 7px; color:#e8e4f6; font-size:10px; font-weight:600; }
+.dashboard-workspace-activity h3 { margin:0 0 7px; color:#e8e4f6; font-size:14px; font-weight:600; }
 .dashboard-client-activity { min-width:0; display:grid; grid-template-columns:29px minmax(0,1fr) auto; align-items:center; gap:9px; padding:7px 5px; border-top:1px solid rgba(255,255,255,.1); border-radius:7px; }
 .dashboard-client-activity .act-icon { width:26px; height:26px; }
 .dashboard-client-activity > span:nth-child(2) { min-width:0; display:flex; flex-direction:column; gap:3px; }
