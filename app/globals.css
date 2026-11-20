@@ -1640,8 +1640,8 @@ small { display: block; }
 .workspace-client-card > i { flex:none; padding:4px 7px; border-radius:20px; background:rgba(83,213,170,.13); color:#70dfb5; font-size:8px; font-style:normal; }
 .workspace-client-card > svg { color:#aca4d0; }
 .workspace-client-form { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:11px; margin:0 0 15px; padding:14px; border:1px solid rgba(157,143,242,.22); border-radius:13px; background:rgba(8,5,40,.28); }
-.workspace-client-form label,.client-work-form label { display:flex; min-width:0; flex-direction:column; gap:6px; color:#c7c1df; font-size:9px; }
-.workspace-client-form input,.workspace-client-form select,.workspace-client-form textarea,.client-work-form textarea { width:100%; min-height:38px; padding:9px 11px; border:1px solid rgba(157,143,242,.24); border-radius:9px; outline:0; background:rgba(12,8,58,.48); color:#fff; font:inherit; font-size:10px; }
+.workspace-client-form label,.client-work-form label { display:flex; min-width:150px; flex-direction:column; gap:6px; color:#c7c1df; font-size:9px; }
+.workspace-client-form input,.workspace-client-form select,.workspace-client-form textarea,.client-work-form textarea { width:70%; min-height:38px; padding:9px 11px; border:1px solid rgba(157,143,242,.24); border-radius:9px; outline:0; background:rgba(12,8,58,.48); color:#fff; font:inherit; font-size:10px; }
 .workspace-client-form textarea,.client-work-form textarea { min-height:67px; resize:vertical; }
 .workspace-client-form .wide,.workspace-form-actions { grid-column:1/-1; }
 .workspace-form-actions { display:flex; justify-content:flex-end; gap:9px; }
