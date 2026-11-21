@@ -140,6 +140,16 @@ export default function WorkspaceBoard() {
       setNotice(error.message || "Payment record could not be deleted.");
     }
   };
+  const deleteActivity = async (item) => {
+    if (!window.confirm("Delete this activity entry? This cannot be undone.")) return;
+    try {
+      await deleteWorkspaceRecord("lead_activities", item.id);
+      refresh();
+      setNotice("Activity entry deleted.");
+    } catch (error) {
+      setNotice(error.message || "Activity entry could not be deleted. Run the latest Supabase migration if needed.");
+    }
+  };
   const clearPayments = async () => {
     if (!payments.length || !window.confirm(`Delete all ${payments.length} payment records? This cannot be undone.`)) return;
     try {
@@ -176,7 +186,7 @@ export default function WorkspaceBoard() {
           <div className="client-activity-column">
             <section>
               <h3>Activity history</h3>
-              {selectedActivity.map((item) => <article className="workspace-activity-row" key={item.id}><i/><div><b>{item.title}</b><small>{item.note}</small></div><time>{new Date(item.createdAt).toLocaleString()}</time></article>)}
+              {selectedActivity.map((item) => <article className="workspace-activity-row" key={item.id}><i/><div><b>{item.title}</b><small>{item.note}</small></div><time>{new Date(item.createdAt).toLocaleString()}</time>{item.type === "work" && <button type="button" className="client-clear-activity" onClick={() => deleteActivity(item)} aria-label="Delete activity entry">Delete</button>}</article>)}
               {selectedActivity.length === 0 && <p className="workspace-muted">No work has been logged for this client.</p>}
             </section>
             {selectedActivity.length > 0 && (

@@ -4,12 +4,16 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Icon from "@/components/Icons";
 import { localDateKey, readTasks, syncTaskCalendar, taskIsOverdue, writeTasks } from "@/lib/tasks";
+import { LEADS_EVENT, readLeads } from "@/lib/leads";
+import { getTeamData } from "@/lib/backendSync";
 
 const TODAY = localDateKey();
 const fmtDate = (key) => key === TODAY ? "Today" : new Date(`${key}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 
 export default function TasksBoard() {
   const [tasks, setTasks] = useState([]);
+  const [accounts, setAccounts] = useState([]);
+  const [team, setTeam] = useState([]);
   const [today, setToday] = useState(TODAY);
   const [storageReady, setStorageReady] = useState(false);
   const [tab, setTab] = useState("My tasks");
@@ -19,7 +23,25 @@ export default function TasksBoard() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [menuId, setMenuId] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
-  const [draft, setDraft] = useState({ title: "", lead: "", detail: "", priority: "Medium", date: TODAY, time: "10:00", owner: "You" });
+  const [draft, setDraft] = useState({ title: "", clientId: "", detail: "", priority: "Medium", date: TODAY, time: "10:00", owner: "You" });
+
+  useEffect(() => {
+    const refreshAccounts = () => setAccounts(readLeads().filter((record) => !record.archived));
+    refreshAccounts();
+    window.addEventListener(LEADS_EVENT, refreshAccounts);
+    window.addEventListener("flowbase:records-ready", refreshAccounts);
+    const loadTeam = async () => {
+      try { setTeam((await getTeamData()).filter((member) => !member.invitation && member.status === "Active")); }
+      catch (error) { console.error("Could not load task assignees:", error); }
+    };
+    loadTeam();
+    window.addEventListener("flowbase:team-updated", loadTeam);
+    return () => {
+      window.removeEventListener(LEADS_EVENT, refreshAccounts);
+      window.removeEventListener("flowbase:records-ready", refreshAccounts);
+      window.removeEventListener("flowbase:team-updated", loadTeam);
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -68,15 +90,18 @@ export default function TasksBoard() {
   const myActiveCount = tasks.filter((task) => task.owner === "You" && !task.completed).length;
   const allActiveCount = tasks.filter((task) => !task.completed).length;
   const completedToday = tasks.filter((task) => task.completed && task.due === TODAY).length;
+  const taskAssignees = team.map((member) => ({ value: member.isCurrent ? "You" : member.name, label: member.isCurrent ? "You" : member.name }));
+  const assignOptions = taskAssignees.length ? taskAssignees : [{ value: "You", label: "You" }];
   const priorityTasks = tasks.filter((task) => !task.completed && ["High", "Urgent"].includes(task.priority));
   const focusedTask = priorityTasks[0];
   const toggleFilter = (name) => setFilters((current) => ({ ...current, [name]: !current[name] }));
   const updateTask = (id, change) => setTasks((current) => current.map((task) => task.id === id ? { ...task, ...change } : task));
   const addTask = (event) => {
     event.preventDefault();
-    if (!draft.title.trim() || !draft.lead.trim()) return;
-    setTasks((current) => [...current, { ...draft, id: crypto.randomUUID(), due: draft.date, detail: draft.detail || "Task for this lead", completed: false }]);
-    setDraft({ title: "", lead: "", detail: "", priority: "Medium", date: TODAY, time: "10:00", owner: "You" });
+    const account = accounts.find((item) => String(item.id) === String(draft.clientId));
+    if (!draft.title.trim() || !account) return;
+    setTasks((current) => [...current, { ...draft, lead: account.name, clientId: account.id, id: crypto.randomUUID(), due: draft.date, detail: draft.detail || "Task for this record", completed: false }]);
+    setDraft({ title: "", clientId: "", detail: "", priority: "Medium", date: TODAY, time: "10:00", owner: "You" });
     setFormOpen(false);
   };
   const grouped = {
@@ -87,7 +112,7 @@ export default function TasksBoard() {
   };
   const todayLabel = new Date(`${today}T12:00:00`).toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
   const visibleGroups = filters.completed ? [["Completed", grouped.completed]] : [[`Today · ${todayLabel}`, grouped.today], ["Overdue", grouped.overdue], ["Upcoming", grouped.upcoming]];
-  const workload = ["You", "John", "Amaka"].map((owner) => ({ owner, count: tasks.filter((task) => task.owner === owner && !task.completed).length }));
+  const workload = [...new Set(["You", ...taskAssignees.map((assignee) => assignee.value)])].map((owner) => ({ owner, count: tasks.filter((task) => task.owner === owner && !task.completed).length }));
 
   return <div className="tasks-page">
     <section className="tasks-heading panel"><div><h1>Tasks</h1><p>Keep important follow-ups moving, one action at a time.</p></div><div className="tasks-heading-actions"><label className="tasks-top-search"><Icon name="search" size={16} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search" aria-label="Search tasks" />{query && <button type="button" aria-label="Clear search" onClick={() => setQuery("")}><Icon name="close" size={14} /></button>}</label><button type="button" className="tasks-add-button" onClick={() => setFormOpen(true)}><Icon name="plus" size={16} />Add task</button></div></section>
@@ -110,8 +135,8 @@ export default function TasksBoard() {
         <Link href={`/leads?search=${encodeURIComponent(task.lead)}`} className="task-description"><b>{task.title}</b><small>{task.lead} · {task.detail}</small></Link>
         <span className={`task-priority-badge ${task.priority.toLowerCase()}`}><i />{task.priority}</span>
         <span className={`task-time ${taskIsOverdue(task, today) ? "is-overdue" : ""}`}><Icon name="calendar" size={12} />{taskIsOverdue(task, today) ? `Overdue · ${fmtDate(task.due)}` : task.due === today ? task.time : `${fmtDate(task.due)}, ${task.time}`}</span>
-        <span className="task-assignee"><i>{task.owner === "You" ? "Y" : task.owner === "John" ? "J" : task.owner === "Ada" ? "A" : "A"}</i>{task.owner}</span>
-        <div className="task-menu-wrap"><button type="button" aria-label={`Actions for ${task.title}`} aria-expanded={menuId === task.id} onClick={() => setMenuId(menuId === task.id ? null : task.id)}><Icon name="more" size={18} /></button>{menuId === task.id && <div className="pipeline-popover"><button type="button" onClick={() => { updateTask(task.id, { priority: task.priority === "High" ? "Medium" : "High" }); setMenuId(null); }}>{task.priority === "High" ? "Lower priority" : "Mark high priority"}</button><button type="button" onClick={() => { updateTask(task.id, { owner: task.owner === "You" ? "John" : "You" }); setMenuId(null); }}>{task.owner === "You" ? "Assign to John" : "Assign to me"}</button><button type="button" onClick={() => { updateTask(task.id, { completed: !task.completed }); setMenuId(null); }}>{task.completed ? "Reopen task" : "Mark complete"}</button></div>}</div>
+        <span className="task-assignee"><i>{task.owner === "You" ? "Y" : (task.owner || "?").slice(0, 1).toUpperCase()}</i>{task.owner}</span>
+        <div className="task-menu-wrap"><button type="button" aria-label={`Actions for ${task.title}`} aria-expanded={menuId === task.id} onClick={() => setMenuId(menuId === task.id ? null : task.id)}><Icon name="more" size={18} /></button>{menuId === task.id && <div className="pipeline-popover"><button type="button" onClick={() => { updateTask(task.id, { priority: task.priority === "High" ? "Medium" : "High" }); setMenuId(null); }}>{task.priority === "High" ? "Lower priority" : "Mark high priority"}</button>{assignOptions.filter((assignee) => assignee.value !== task.owner).map((assignee) => <button key={assignee.value} type="button" onClick={() => { updateTask(task.id, { owner: assignee.value }); setMenuId(null); }}>{assignee.value === "You" ? "Assign to me" : `Assign to ${assignee.label}`}</button>)}<button type="button" onClick={() => { updateTask(task.id, { completed: !task.completed }); setMenuId(null); }}>{task.completed ? "Reopen task" : "Mark complete"}</button></div>}</div>
       </article>)}</div></section> : null)}{visibleGroups.every(([, items]) => items.length === 0) && <div className="tasks-empty"><Icon name="tasks" size={26} /><p>No tasks match these filters.</p><button type="button" onClick={() => { setQuery(""); setPriority("Priority"); setFilters({ assigned: false, due: false, overdue: false, completed: false }); }}>Clear filters</button></div>}</div>
     </section>
 
@@ -121,6 +146,6 @@ export default function TasksBoard() {
       <section className="task-tip"><span>QUICK TIP</span><p>Complete a task to keep its lead moving through the pipeline.</p><button type="button" onClick={() => { setFilters({ assigned: false, due: false, overdue: false, completed: true }); setTab("All tasks"); }}>View completed tasks <Icon name="arrow" size={13} /></button></section>
     </aside>}</div>
 
-    {formOpen && <div className="pipeline-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setFormOpen(false); }}><section className="pipeline-modal" role="dialog" aria-modal="true" aria-labelledby="new-task-title"><header><div><h2 id="new-task-title">Add a task</h2><p>Give your next action an owner and due date.</p></div><button type="button" aria-label="Close" onClick={() => setFormOpen(false)}><Icon name="close" size={18} /></button></header><form onSubmit={addTask}><label>Task title<input required autoFocus value={draft.title} onChange={(event) => setDraft({ ...draft, title: event.target.value })} placeholder="What needs to be done?" /></label><label>Lead or company<input required value={draft.lead} onChange={(event) => setDraft({ ...draft, lead: event.target.value })} placeholder="Lead or company name" /></label><label>Details<input value={draft.detail} onChange={(event) => setDraft({ ...draft, detail: event.target.value })} placeholder="Add a short note" /></label><div className="pipeline-modal-fields"><label>Due date<input type="date" required value={draft.date} onChange={(event) => setDraft({ ...draft, date: event.target.value })} /></label><label>Time<input type="time" required value={draft.time} onChange={(event) => setDraft({ ...draft, time: event.target.value })} /></label></div><div className="pipeline-modal-fields"><label>Priority<select value={draft.priority} onChange={(event) => setDraft({ ...draft, priority: event.target.value })}><option>Urgent</option><option>High</option><option>Medium</option><option>Low</option></select></label><label>Assign to<select value={draft.owner} onChange={(event) => setDraft({ ...draft, owner: event.target.value })}><option>You</option><option>John</option><option>Ada</option><option>Amaka</option></select></label></div><footer><button type="button" onClick={() => setFormOpen(false)}>Cancel</button><button className="pipeline-add" type="submit"><Icon name="plus" size={15} />Add task</button></footer></form></section></div>}
+    {formOpen && <div className="pipeline-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setFormOpen(false); }}><section className="pipeline-modal" role="dialog" aria-modal="true" aria-labelledby="new-task-title"><header><div><h2 id="new-task-title">Add a task</h2><p>Give your next action an owner and due date.</p></div><button type="button" aria-label="Close" onClick={() => setFormOpen(false)}><Icon name="close" size={18} /></button></header><form onSubmit={addTask}><label>Task title<input required autoFocus value={draft.title} onChange={(event) => setDraft({ ...draft, title: event.target.value })} placeholder="What needs to be done?" /></label><label>Lead or client<select required value={draft.clientId} onChange={(event) => setDraft({ ...draft, clientId: event.target.value })}><option value="">Choose a lead or client</option><optgroup label="Leads">{accounts.filter((record) => record.recordType !== "client" && record.stage !== "Won").map((record) => <option key={record.id} value={record.id}>{record.name}</option>)}</optgroup><optgroup label="Clients">{accounts.filter((record) => record.recordType === "client" || record.stage === "Won").map((record) => <option key={record.id} value={record.id}>{record.name}</option>)}</optgroup></select></label><label>Details<input value={draft.detail} onChange={(event) => setDraft({ ...draft, detail: event.target.value })} placeholder="Add a short note" /></label><div className="pipeline-modal-fields"><label>Due date<input type="date" required value={draft.date} onChange={(event) => setDraft({ ...draft, date: event.target.value })} /></label><label>Time<input type="time" required value={draft.time} onChange={(event) => setDraft({ ...draft, time: event.target.value })} /></label></div><div className="pipeline-modal-fields"><label>Priority<select value={draft.priority} onChange={(event) => setDraft({ ...draft, priority: event.target.value })}><option>Urgent</option><option>High</option><option>Medium</option><option>Low</option></select></label><label>Assign to<select value={draft.owner} onChange={(event) => setDraft({ ...draft, owner: event.target.value })}>{assignOptions.map((assignee) => <option key={assignee.value} value={assignee.value}>{assignee.label}</option>)}</select></label></div><footer><button type="button" onClick={() => setFormOpen(false)}>Cancel</button><button className="pipeline-add" type="submit"><Icon name="plus" size={15} />Add task</button></footer></form></section></div>}
   </div>;
 }
