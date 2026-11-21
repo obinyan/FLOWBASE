@@ -5,8 +5,9 @@ This copy of Flowbase now uses the normalized tables from the SQL schema supplie
 ## Apply the SQL upgrade
 
 1. Confirm the supplied base schema is already installed in the Supabase project.
-2. Open Supabase SQL Editor and run `supabase/migrations/202611160001_flowbase_feature_upgrade.sql`.
-3. Keep the existing `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` Vercel values. Do not expose a Supabase service-role key as a `NEXT_PUBLIC_` value.
+2. Open Supabase SQL Editor and run `supabase/migrations/202611160001_flowbase_feature_upgrade.sql` if it has not already been applied.
+3. Run `supabase/migrations/202611210001_payment_currency_and_deletion.sql`. This makes saving the workspace currency relabel every saved payment and allows workspace writers to delete or clear payment records. Deleting payments also removes linked payment activity and redacts the payment values in audit snapshots.
+4. Keep the existing `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` Vercel values. Do not expose a Supabase service-role key as a `NEXT_PUBLIC_` value.
 
 The upgrade adds persistent lead archiving, profile preferences, calendar-provider event identifiers, a server-only provider-token table, a safe notification import RPC, and Realtime publication entries for the feature tables.
 

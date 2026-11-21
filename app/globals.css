@@ -1678,6 +1678,8 @@ small { display: block; }
 .payments-row > b,.payments-row > strong { color:#fff; }
 .payments-row > span:last-child { display:flex; flex-direction:column; align-items:flex-start; gap:4px; }
 .payments-row > span:last-child small { color:#aaa3c9; font-size:7px; }
+.payment-delete-button { padding:3px 7px; border:1px solid rgba(255,130,150,.35); border-radius:6px; color:#ffb4c1; font-size:13px; }
+.payment-delete-button:hover { background:rgba(255,75,110,.14); }
 .payment-status { padding:3px 7px; border-radius:20px; background:rgba(255,255,255,.08); font-size:8px; font-style:normal; }
 .payment-status.paid { background:rgba(83,213,170,.13); color:#70dfb5; }
 .payment-status.overdue { background:rgba(255,75,110,.12); color:#ff9aaf; }
