@@ -126,8 +126,9 @@ export default function SettingsPage() {
     try { localStorage.setItem("flowbase:settings", JSON.stringify(form)); } catch {}
     window.dispatchEvent(new Event("flowbase:settings-updated"));
     void saveProfileFromSettings(form);
+    let currencyChanged = false;
     try {
-      await updateWorkspaceSettings({ name: form.workspace, currency: form.currency });
+      currencyChanged = await updateWorkspaceSettings({ name: form.workspace, currency: form.currency });
       window.dispatchEvent(new Event("flowbase:currency-updated"));
     } catch (error) {
       setSaved(false);
@@ -137,7 +138,7 @@ export default function SettingsPage() {
     document.documentElement.dataset.theme = String(form.theme || "Dark").toLowerCase();
     document.documentElement.lang = ({ English: "en", French: "fr", Spanish: "es" })[form.language] || "en";
     setSaved(true);
-    setNotice("Your settings have been saved.");
+    setNotice(currencyChanged ? "Your default currency and existing payments have been updated." : "Your settings have been saved.");
     window.setTimeout(() => setNotice(""), 2800);
   };
   const exportData = () => {
