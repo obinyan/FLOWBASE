@@ -5,7 +5,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { clearLocalData } from "@/lib/session";
 import { saveProfileFromSettings } from "@/lib/profile";
-import { removeProfilePhoto, updateWorkspaceName, uploadProfilePhoto } from "@/lib/backendSync";
+import { removeProfilePhoto, updateWorkspaceSettings, uploadProfilePhoto } from "@/lib/backendSync";
+import { CURRENCIES } from "@/lib/currency";
 import Icon from "@/components/Icons";
 
 const SECTIONS = [
@@ -20,7 +21,7 @@ const SECTIONS = [
 
 const INITIAL = {
   firstName: "John", lastName: "Okafor", email: "john@flowbase.io", title: "Sales manager",
-  phone: "+234 801 234 5678", timezone: "Africa/Lagos", workspace: "Flowbase", language: "English",
+  phone: "+234 801 234 5678", timezone: "Africa/Lagos", workspace: "Flowbase", currency: "USD", language: "English",
   twoFactor: true, emailUpdates: true, weeklyDigest: false, productTips: true, theme: "Dark",
 };
 
@@ -120,12 +121,19 @@ export default function SettingsPage() {
     setMfaCode("");
     setNotice("Two-factor authentication is enabled.");
   };
-  const save = (event) => {
+  const save = async (event) => {
     event.preventDefault();
     try { localStorage.setItem("flowbase:settings", JSON.stringify(form)); } catch {}
     window.dispatchEvent(new Event("flowbase:settings-updated"));
     void saveProfileFromSettings(form);
-    void updateWorkspaceName(form.workspace).catch((error) => setNotice(error.message || "Workspace name could not be saved."));
+    try {
+      await updateWorkspaceSettings({ name: form.workspace, currency: form.currency });
+      window.dispatchEvent(new Event("flowbase:currency-updated"));
+    } catch (error) {
+      setSaved(false);
+      setNotice(error.message || "Workspace settings could not be saved.");
+      return;
+    }
     document.documentElement.dataset.theme = String(form.theme || "Dark").toLowerCase();
     document.documentElement.lang = ({ English: "en", French: "fr", Spanish: "es" })[form.language] || "en";
     setSaved(true);
@@ -215,7 +223,7 @@ export default function SettingsPage() {
 
           <section className="settings-section" id="workspace">
             <SectionTitle title="Workspace" description="Set up your workspace name and defaults." icon="briefcase" />
-            <div className="settings-fields two-col"><Field label="WORKSPACE NAME"><input id="workspace-name-field" value={form.workspace} onChange={(e) => update("workspace", e.target.value)} /></Field><Field label="DEFAULT LANGUAGE"><div className="settings-select-wrap"><Icon name="globe" size={16} /><select value={form.language} onChange={(e) => update("language", e.target.value)}><option>English</option><option>French</option><option>Spanish</option></select><Icon name="chevron" size={15} /></div></Field></div>
+            <div className="settings-fields two-col"><Field label="WORKSPACE NAME"><input id="workspace-name-field" value={form.workspace} onChange={(e) => update("workspace", e.target.value)} /></Field><Field label="DEFAULT CURRENCY"><div className="settings-select-wrap"><Icon name="globe" size={16} /><select value={form.currency || "USD"} onChange={(e) => update("currency", e.target.value)}>{CURRENCIES.map((currency) => <option key={currency.code} value={currency.code}>{currency.label}</option>)}</select><Icon name="chevron" size={15} /></div></Field><Field label="DEFAULT LANGUAGE"><div className="settings-select-wrap"><Icon name="globe" size={16} /><select value={form.language} onChange={(e) => update("language", e.target.value)}><option>English</option><option>French</option><option>Spanish</option></select><Icon name="chevron" size={15} /></div></Field></div>
             <div className="settings-logo-row"><span className="settings-logo-mark"><Icon name="briefcase" size={20} /></span><span><strong>Workspace identity</strong><small>Flowbase workspace · Your team’s shared home</small></span><button type="button" className="settings-button subtle" onClick={() => goToSection("workspace")}>Manage</button></div>
           </section>
 

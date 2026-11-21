@@ -5,6 +5,7 @@ import Link from "next/link";
 import Icon from "@/components/Icons";
 import { LEADS_EVENT, readLeads } from "@/lib/leads";
 import { localDateKey, readTasks, TASKS_EVENT } from "@/lib/tasks";
+import { formatCurrencyTotals, useWorkspaceCurrency } from "@/lib/currency";
 
 const PAYMENT_KEY = "flowbase:payments:v1";
 const ACTIVITY_KEY = "flowbase:client-activity:v1";
@@ -17,11 +18,8 @@ function readArray(key) {
   } catch { return []; }
 }
 
-function formatMoney(value) {
-  return `$${Number(value || 0).toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
-}
-
 export default function DashboardOverview() {
+  const workspaceCurrency = useWorkspaceCurrency();
   const [leads, setLeads] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [payments, setPayments] = useState([]);
@@ -44,7 +42,7 @@ export default function DashboardOverview() {
   const prospects = useMemo(() => leads.filter((record) => !record.archived && !isClient(record)), [leads]);
   const clientTasks = useMemo(() => tasks.filter((task) => !task.completed && clients.some((client) => String(task.clientId) === String(client.id) || task.lead === client.name)), [tasks, clients]);
   const dueFollowUps = prospects.filter((lead) => lead.followUpDate && lead.followUpDate <= localDateKey()).length;
-  const paidTotal = payments.filter((payment) => payment.status === "Paid").reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
+  const paidTotal = formatCurrencyTotals(payments.filter((payment) => payment.status === "Paid"), workspaceCurrency);
   const recentActivity = activity
     .filter((item) => clients.some((client) => String(client.id) === String(item.clientId)))
     .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
@@ -75,7 +73,7 @@ export default function DashboardOverview() {
         <div className="dashboard-workspace-metrics">
           <Link href="/workspace?tab=clients"><span>ACTIVE CLIENTS</span><b>{clients.length}</b></Link>
           <Link href="/tasks"><span>OPEN CLIENT TASKS</span><b>{clientTasks.length}</b></Link>
-          <Link href="/workspace?tab=payments"><span>PAYMENTS RECEIVED</span><b>{formatMoney(paidTotal)}</b></Link>
+          <Link href="/workspace?tab=payments"><span>PAYMENTS RECEIVED</span><b>{paidTotal}</b></Link>
         </div>
         <div className="dashboard-workspace-activity">
           <h3>Recent client activity</h3>

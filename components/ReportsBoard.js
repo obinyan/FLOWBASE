@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Icon from "@/components/Icons";
 import Link from "next/link";
 import { readLeads } from "@/lib/leads";
+import { formatCurrency, useWorkspaceCurrency } from "@/lib/currency";
 
 const SOURCE_COLORS = ["#5478ff", "#7c9dff", "#93b8ff", "#b0c7ff", "#667eea"];
 const STAGES = [
@@ -14,7 +15,6 @@ const STAGES = [
   { name: "Won", count: 8, color: "#53d5aa" },
 ];
 const PRESETS = { "Last 7 days": 7, "Last 16 days": 16, "Last 30 days": 30, "Last 90 days": 90 };
-const money = (value) => `$${Number(value).toLocaleString("en-US")}`;
 const localDateKey = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
 function linePath(values, width, height, maxValue) {
@@ -52,6 +52,8 @@ function ActivityChart({ leads, period, group }) {
 }
 
 export default function ReportsBoard() {
+  const workspaceCurrency = useWorkspaceCurrency();
+  const money = (value) => formatCurrency(value, workspaceCurrency);
   const [range, setRange] = useState("Last 16 days");
   const [group, setGroup] = useState("Daily");
   const [pipelinePeriod, setPipelinePeriod] = useState("This month");

@@ -5,12 +5,14 @@ import Link from "next/link";
 import Icon from "@/components/Icons";
 import LeadDetailsModal from "@/components/LeadDetailsModal";
 import { ADD_LEAD_EVENT, LEADS_EVENT, readLeads, writeLeads } from "@/lib/leads";
+import { formatCurrency, useWorkspaceCurrency } from "@/lib/currency";
 
 const STAGES = ["New", "Contacted", "Qualified", "Proposal", "Won"];
 const COLORS = { New: "#58c8f0", Contacted: "#9b82ff", Qualified: "#f4bb4d", Proposal: "#f28d77", Won: "#53d5aa" };
-const currency = (value) => `$${Number(value || 0).toLocaleString("en-US")}`;
 
 export default function PipelineBoard() {
+  const workspaceCurrency = useWorkspaceCurrency();
+  const currency = (value) => formatCurrency(value, workspaceCurrency);
   const [leads, setLeads] = useState([]);
   const [view, setView] = useState("Board");
   const [query, setQuery] = useState("");

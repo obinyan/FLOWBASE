@@ -5,13 +5,15 @@ import Link from "next/link";
 import Icon from "@/components/Icons";
 import LeadDetailsModal from "@/components/LeadDetailsModal";
 import { ADD_LEAD_EVENT, LEADS_EVENT, readLeads, writeLeads } from "@/lib/leads";
+import { formatCurrency, useWorkspaceCurrency } from "@/lib/currency";
 
 const STAGES = ["New", "Contacted", "Qualified", "Proposal", "Won"];
 const SOURCES = ["Website", "Instagram", "TikTok", "LinkedIn", "Facebook", "WhatsApp", "Email", "Phone", "Referral", "Event", "Other"];
 const COLORS = { New: "#58c8f0", Contacted: "#9b82ff", Qualified: "#f4bb4d", Proposal: "#f28d77", Won: "#53d5aa" };
-const money = (value) => `$${Number(value || 0).toLocaleString("en-US")}`;
 
 export default function LeadsTable({ initialQuery = "", initialPriority = false }) {
+  const workspaceCurrency = useWorkspaceCurrency();
+  const money = (value) => formatCurrency(value, workspaceCurrency);
   const [leads, setLeads] = useState([]);
   const [query, setQuery] = useState(initialQuery);
   const [stage, setStage] = useState("All stages");

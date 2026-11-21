@@ -1,8 +1,10 @@
 "use client";
 
 import Icon from "@/components/Icons";
+import { formatCurrency, useWorkspaceCurrency } from "@/lib/currency";
 
 export default function LeadDetailsModal({ lead, onClose, onHistory }) {
+  const workspaceCurrency = useWorkspaceCurrency();
   if (!lead) return null;
   const profileLinks = [
     ["Website", lead.website], ["Instagram", lead.instagram], ["TikTok", lead.tiktok],
@@ -14,7 +16,7 @@ export default function LeadDetailsModal({ lead, onClose, onHistory }) {
       <div className="lead-detail-identity"><span className="pipeline-avatar">{lead.initials || "?"}</span><div><h3>{lead.name}</h3><p>{lead.contact || "Contact not provided"}{lead.industry ? ` · ${lead.industry}` : ""}</p></div><span className="lead-detail-stage">{lead.stage || "New"}</span></div>
       <div className="lead-detail-grid">
         <div><small>EMAIL</small><b>{lead.email || "Not provided"}</b></div><div><small>PHONE</small><b>{lead.phone || "Not provided"}</b></div>
-        <div><small>ESTIMATED VALUE</small><b>${Number(lead.value || 0).toLocaleString("en-US")}</b></div><div><small>SOURCE</small><b>{lead.source || "Other"}{lead.sourceDetail ? ` · ${lead.sourceDetail}` : ""}</b></div>
+        <div><small>ESTIMATED VALUE</small><b>{formatCurrency(lead.value, workspaceCurrency)}</b></div><div><small>SOURCE</small><b>{lead.source || "Other"}{lead.sourceDetail ? ` · ${lead.sourceDetail}` : ""}</b></div>
         <div><small>OWNER</small><b>{lead.owner || "You"}</b></div><div><small>NEXT FOLLOW-UP</small><b>{lead.followUp || "Not scheduled"}</b></div>
         {lead.address && <div className="wide"><small>ADDRESS</small><b>{lead.address}</b></div>}
         {profileLinks.length > 0 && <div className="wide"><small>ONLINE PROFILES</small><div className="lead-detail-links">{profileLinks.map(([label, value]) => <a key={label} href={value.startsWith("http") ? value : `https://${value}`} target="_blank" rel="noreferrer"><Icon name={label === "Instagram" ? "instagram" : label === "LinkedIn" ? "linkedin" : "globeLink"} size={14} />{label}</a>)}</div></div>}
