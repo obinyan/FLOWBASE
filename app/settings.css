@@ -68,7 +68,7 @@
 .settings-logo-row small { margin-top:4px; color:#a9a2c4; font-size:8px; }
 .settings-integration { min-height:59px; }
 .integration-brand { width:30px; height:30px; flex:none; display:grid; place-items:center; border-radius:9px; background:#fff; font-size:16px; font-weight:700; }
-.integration-brand.gmail { color:#4285f4; }.integration-brand.outlook { color:#1683d8; }
+.integration-brand.gmail { color:#4285f4 !important; }.integration-brand.outlook { color:#1683d8 !important; }
 .integration-status { display:flex; align-items:center; gap:6px; color:#a9ddb7; font-size:8px; }
 .integration-status i { width:6px; height:6px; border-radius:50%; background:#56ce89; box-shadow:0 0 8px rgba(86,206,137,.55); }
 .settings-icon-button { width:31px; padding:0; border-color:transparent; }
@@ -209,7 +209,7 @@
 
 /* Platform-wide body typography: keep heading styles intact and standardize all other text. */
 body *:not(h1, h2, h3, h4, h5, h6, h1 *, h2 *, h3 *, h4 *, h5 *, h6 *, svg, svg *):not(.bottom-nav):not(.bottom-nav *) {
-  color: #fff !important;
+  color: #fff ;
   font-size: 14px !important;
   /*letter-spacing: normal !important;*/
 }
